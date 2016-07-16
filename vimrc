@@ -52,14 +52,14 @@ call vundle#begin()
 "call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle
-" required! 
+" required!
 Plugin 'VundleVim/Vundle.vim'
- 
+
 " Sample:
 " Plugin 'L9'                  " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'tpope/vim-fugitive'  " plugin on GitHub repo
 " Plugin 'git://git.wincent.com/command-t.git' " Git plugin not hosted on GitHub
-" Plugin 'file:///home/gmarik/path/to/plugin' " git repos on your local machine (i.e. when working on your own plugin) 
+" Plugin 'file:///home/gmarik/path/to/plugin' " git repos on your local machine (i.e. when working on your own plugin)
 " Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}  " The sparkup vim script is in a subdirectory of this repo called vim.
 "                                             " Pass the path to set the runtimepath properly.
 " Plugin 'user/L9', {'name': 'newL9'} " Avoid a name conflict with L9
@@ -117,13 +117,22 @@ Plugin 'plasticboy/vim-markdown'
 
 " utility tools
 Plugin 'scrooloose/nerdtree'
+Plugin 'Shougo/unite.vim' " needed by vimfiler
+Plugin 'Shougo/vimfiler.vim'
 " Buffer and status line
-Plugin 'bling/vim-airline.git'
+"Plugin 'bling/vim-airline.git'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+
 Plugin 'hynek/vim-python-pep8-indent' " Pythonindent 2016-05-22
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'lilydjwg/fcitx.vim.git'
 Plugin 'vim-scripts/mru.vim.git'
 Plugin 'dimasg/vim-mark'
+" needed by vim-session
+Plugin 'xolox/vim-misc'
+" 支持 NERDTree 恢复的session管理工具
+Plugin 'xolox/vim-session'
 Plugin 'junegunn/vim-easy-align.git'
 Plugin 'godlygeek/tabular'
 Plugin 'qpkorr/vim-renamer'
@@ -136,6 +145,7 @@ Plugin 'tpope/vim-speeddating' " https://github.com/tpope/vim-speeddating.git
 Plugin 'aur-archive/vim-stlrefvim' " https://github.com/aur-archive/vim-stlrefvim
 Plugin 'vim-scripts/CRefVim' " https://github.com/vim-scripts/CRefVim
 Plugin 'easymotion/vim-easymotion' " 类似浏览器alt + 数字 调整到具体widget的快速跳转功能
+Plugin 'will133/vim-dirdiff' " 目录比较工具
 " https://github.com/Chiel92/vim-autoformat
 
 " Unknown
@@ -143,7 +153,11 @@ Plugin 'ashisha/image.vim' " what for ?
 "Plugin 'marijnh/tern_for_vim'
 
 " ctrlp file serching tool
-Plugin 'kien/ctrlp.vim'
+" Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
+
+" utility tools devicons must the last!
+Plugin 'ryanoasis/vim-devicons' " Powerline(air-line), Nerd Font
 
 " @ Plugin --- [ Code Sreach ]
 Plugin 'rking/ag.vim'
@@ -167,6 +181,7 @@ nnoremap <C-F4> :YcmDiags<CR>
 nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap <leader>go :YcmCompleter GoToInclude<CR>
 
 " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 let g:ycm_global_ycm_extra_conf = '~/.vim/ycm/cpp/.ycm_extra_conf.py'
@@ -201,7 +216,7 @@ let g:SuperTabDefaultCompletionType = '<C-n>'
 
 "Do not ask when starting vim
 let g:ycm_confirm_extra_conf = 0
-"let g:ycm_autoclose_preview_window_after_completion=1 
+"let g:ycm_autoclose_preview_window_after_completion=1
 
 let g:syntastic_always_populate_loc_list = 1
 
@@ -220,31 +235,68 @@ let g:ycm_python_binary_path = '/usr/bin/python3'
 "    exe 'inoremap <expr>' . key .
 "          \ ' pumvisible() ? "\<C-p>" : "\' . key .'"'
 
-" vim-airline ---------------------------------------------------------------{{{1
-  let g:airline#extensions#tabline#enabled = 1
-  set hidden
-  let g:airline#extensions#tabline#fnamemod = ':t'
-  let g:airline#extensions#tabline#show_tab_nr = 1
-  "let g:airline_powerline_fonts = 1
-  "let g:airline_theme='oceanicnext'
-  cnoreabbrev <expr> x getcmdtype() == ":" && getcmdline() == 'x' ? 'Sayonara' : 'x'
-  " tmap is not vim command?
-  "tmap <leader>x <c-\><c-n>:bp! <BAR> bd! #<CR>
-  nmap <leader>t :term<cr>
-  nmap <leader>, :bnext<CR>
-  "tmap <leader>, <C-\><C-n>:bnext<cr>
-  nmap <leader>. :bprevious<CR>
-  "tmap <leader>. <C-\><C-n>:bprevious<CR>
-  let g:airline#extensions#tabline#buffer_idx_mode = 1
-  nmap <leader>1 <Plug>AirlineSelectTab1
-  nmap <leader>2 <Plug>AirlineSelectTab2
-  nmap <leader>3 <Plug>AirlineSelectTab3
-  nmap <leader>4 <Plug>AirlineSelectTab4
-  nmap <leader>5 <Plug>AirlineSelectTab5
-  nmap <leader>6 <Plug>AirlineSelectTab6
-  nmap <leader>7 <Plug>AirlineSelectTab7
-  nmap <leader>8 <Plug>AirlineSelectTab8
-  nmap <leader>9 <Plug>AirlineSelectTab9
+" DoxygenToolkit ---------------------------------------------------------------{{{1
+let g:DoxygenToolkit_authorName="sarrow, 549506937@qq.com"
+let s:licenseTag = "Copyright(C)\<enter>"
+let s:licenseTag = s:licenseTag . "For free\<enter>"
+let s:licenseTag = s:licenseTag . "All right reserved\<enter>"
+let g:DoxygenToolkit_licenseTag = s:licenseTag
+let g:DoxygenToolkit_briefTag_funcName="yes"
+let g:doxygen_enhanced_color=1
+let g:DoxygenToolkit_commentType="Qt"
+
+" vim-devicons -------------------------------------------{{{1
+"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 11
+"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types\ 11
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+let g:WebDevIconsUnicodeGlyphDoubleWidth = 0
+let g:webdevicons_conceal_nerdtree_brackets = 1
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
+set encoding=utf-8
+
+" vim-airline new 2016-07-14---------------------------------------------------------------{{{1
+let g:airline_theme="badwolf"
+let g:airline_powerline_fonts = 1
+"let g:airline_section_b = '%{strftime("%c")}'
+"let g:airline_section_y = 'BN: %{bufnr("%")}'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+" new 2016-07-14
+
+" vim-airline old 2016-07-14---------------------------------------------------------------{{{1
+"  let g:airline#extensions#tabline#enabled = 1
+"  set hidden
+"  let g:airline#extensions#tabline#fnamemod = ':t'
+"  let g:airline#extensions#tabline#show_tab_nr = 1
+"  "let g:airline_powerline_fonts = 1
+"  "let g:airline_theme='oceanicnext'
+"  cnoreabbrev <expr> x getcmdtype() == ":" && getcmdline() == 'x' ? 'Sayonara' : 'x'
+"  " tmap is not vim command?
+"  "tmap <leader>x <c-\><c-n>:bp! <BAR> bd! #<CR>
+"  nmap <leader>t :term<cr>
+"  nmap <leader>, :bnext<CR>
+"  "tmap <leader>, <C-\><C-n>:bnext<cr>
+"  nmap <leader>. :bprevious<CR>
+"  "tmap <leader>. <C-\><C-n>:bprevious<CR>
+"  let g:airline#extensions#tabline#buffer_idx_mode = 1
+"  nmap <leader>1 <Plug>AirlineSelectTab1
+"  nmap <leader>2 <Plug>AirlineSelectTab2
+"  nmap <leader>3 <Plug>AirlineSelectTab3
+"  nmap <leader>4 <Plug>AirlineSelectTab4
+"  nmap <leader>5 <Plug>AirlineSelectTab5
+"  nmap <leader>6 <Plug>AirlineSelectTab6
+"  nmap <leader>7 <Plug>AirlineSelectTab7
+"  nmap <leader>8 <Plug>AirlineSelectTab8
+"  nmap <leader>9 <Plug>AirlineSelectTab9
+" old 2016-07-14
 
   "if !exists('g:airline_symbols')
   "  let g:airline_symbols = {}
@@ -282,7 +334,7 @@ let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 let g:UltiSnipsListSnippets="<c-e>"
 
 " delimitMate " {{{1
-" disable delimitMate 
+" disable delimitMate
 let loaded_delimitMate = 1
 au FileType text let b:loaded_delimitMate = 1
 
@@ -407,6 +459,19 @@ function MakeSession(session_name)
     if a:session_name != ''
         let l:session_name = '~/' . a:session_name . '.vim'
     endif
+
+    " Sarrow: 2016-07-14
+    " 由于 mks 和 NERDTree 不搭:
+    "" https://github.com/jistr/vim-nerdtree-tabs/issues/65
+    tablast
+    while 1
+        silent execute ' NERDTreeClose'
+        if tabpagenr() == 1
+            break
+        endif
+        tabprevious
+    endwhile
+
     silent execute ' mks! ' . l:session_name
 endfunction
 
@@ -435,6 +500,9 @@ endif
 " Sarrow:2011-12-29
 set mouse=a				" 让vim在终端中也能处理鼠标
 " End:
+
+set whichwrap+=<,>,h,l                  " 跨行首尾，移动光标
+set fillchars=vert:\ ,stl:\ ,stlnc:\
 
 set background=dark
 set autoindent                          " Auto-indent on
@@ -577,7 +645,7 @@ endfunction 		" }}}
 
 command -nargs=0	BufWipeoutAll	silent execute ' 0,'.bufnr('$').'bwipeout'
 
-if MySys() == 'windows'
+if MySys() == 'windows' " {{{2
     set tenc=cp936
     "language "en_US.ISO_8859-1"
     "控制欢迎字幕以及状态条语言
@@ -683,6 +751,7 @@ if MySys() == "windows"
 elseif MySys() == "linux"
     au BufEnter /usr/include/c++/*		setf cpp
     au BufEnter /usr/include/c++/4.8/*  	setf cpp
+    au BufEnter /usr/include/c++/4.9/*  	setf cpp
 endif
 
 " Sarrow: 2008十二月14
@@ -996,7 +1065,8 @@ command -nargs=1 -complete=file Write	call s:ForceWrite(<q-args>)
 "  FileType Spcific Extension:		{{{1
 "" NOTE: sw : shiftwidth; ts : tabstop; et : expandtab; gfn : guifont; nu : number; fdm : foldermethod;
 
-au FileType c,java,d   " {{{2
+" FileType: c,java,d,cpp {{{2
+au FileType c,java,d
 	    \ let g:load_doxygen_syntax=1|
 	    \ setlocal cindent cinoptions=:0,g0,t0,(0,W8|
 	    \ setlocal fo+=mM ts=4 sw=4 et nu fdm=marker|
@@ -1013,7 +1083,7 @@ au FileType cpp
 	    \ call pairpunct#PairAdd_english_style()|
 	    \ setlocal dictionary-=~/.vim/keywords/c-c++.txt dictionary+=~/.vim/keywords/c-c++.txt
 
-" make {{{2
+" FileType: make {{{2
 autocmd FileType make
 	    \ setlocal fo+=mM ts=4 sw=4 nu fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
@@ -1033,7 +1103,19 @@ au BufWritePre *.txt,*.cal " {{{2
 	    \ if &ft=='' | setfiletype txt | endif |
 	    \ if (&fenc=='' || &fenc=='euc-cn') | set fenc=utf8 | endif
 
+au BufRead *.txt
+			\ if expand("%:t") != "CMakeLists.txt" | setfiletype text | endif
 
+au FileType text
+	    \ if line('$') == 1 && getline('$') == '' | set fenc=cp936 | endif |
+	    \ setlocal ts=8 sw=8 nu noet fo+=qnmM tw=80
+
+au FileType xml
+	    \ setlocal ts=4 sw=4 number|
+            \ call pairpunct#Bind_punct_complete()|
+            \ call pairpunct#PairAdd_english_style()
+
+" FileType: markdown {{{2
 autocmd FileType markdown call pairpunct#PairAdd_chinese_style()
 
 " Sarrow: 2011-12-20
@@ -1042,14 +1124,7 @@ au BufWritePre *
 	    \ if &fenc=='euc-cn' | set fenc=cp936 | endif
 " End:
 
-au BufRead *.txt 
-			\ if expand("%:t") != "CMakeLists.txt" | setfiletype text | endif
-
-au FileType text
-	    \ if line('$') == 1 && getline('$') == '' | set fenc=cp936 | endif |
-	    \ setlocal ts=8 sw=8 nu noet fo+=qnmM tw=80
-
-" cmake {{{2
+" FileType: cmake {{{2
 au BufReadPost CMakeLists.txt setfiletype cmake
 if !filereadable("~/.vim/keywords/cmake.txt")
 	call writefile(split(system("cmake --help-command-list --help-variable-list --help-property-list"), "\n"), expand("~/.vim/keywords/cmake.txt"), "b")
@@ -1058,12 +1133,12 @@ endif
 
 autocmd FileType cmake call pairpunct#PairAdd_english_style()
 
-" vim-scripts {{{2
+" FileType: vim-scripts {{{2
 autocmd FileType vim
 			\ call pairpunct#PairAdd_english_style()|
 			\ set ts=8 sw=4 expandtab
 
-" TODO
+" TODO {{{2
 " ctags for PHP
 "#!/bin/bash
 "cd /path/to/framework/library
@@ -1081,7 +1156,7 @@ autocmd FileType vim
 "========== Make file 2011-05-27 =================================== {{{2
 "nnoremap <C-M>		:update!<CR>:make<CR>
 nnoremap <M-S-T>		:tabnew<CR>
-nnoremap <C-n>			:new 
+nnoremap <C-n>			:new
 "For editing on the command-line: >
 " start of line
 cnoremap <C-A>		<Home>
