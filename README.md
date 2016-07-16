@@ -24,11 +24,11 @@ for anyone who need this
 
    使用的时候，形如：
 
-```vim
-au FileType c,java,d
-	    \ call pairpunct#Bind_punct_complete()|
-	    \ call pairpunct#PairAdd_english_style()
-```
+    ```vim
+    au FileType c,java,d
+    	    \ call pairpunct#Bind_punct_complete()|
+    	    \ call pairpunct#PairAdd_english_style()
+    ```
 
    对于中文标点，则可以使用 call pairpunct#PairAdd_chinese_style() 即可。
 
@@ -38,6 +38,10 @@ au FileType c,java,d
    如 i_A-l; 此外还有 i_A-h,i_A-i,i_A-k。分别表示光标向左、向右、向上、行下移动一个字符。
 
 4. 此外，还有 system.vim 插件，以方便地从(g)vim中，呼叫出文件系统浏览器、shell/cmd窗口，等等。
+
+5. 为了方便编写cpp程序，以及，用cmake管理工程，我还额外配套了一个二进制工具：
+   gensketch.vim 和 vim 脚本 simple-cmake.vim；分别用来自动创建 `.gitignore`；批量创建cpp的头文件和实现文件；
+   以及，批量创建cmake工程，或者qt工程文件。这些，都是基于模板来创建的。
 
 ## 插件列表
 
