@@ -14,7 +14,7 @@ vim 是一个高度可定制化的，文本编辑软件。因此，其个性化�
 
 本vimrc配置文件，是我多年使用vim软件积累所得；主要是自己的一些使用习惯和积累下来的大众化插件。
 
-在2016年初的时候，我引入了vim-Bundle的管理插件的方式，升级了自己的vim管理插件的方式，并替换、更改了部分常用插件。
+在2016年初的时候，我引入了`vim-Bundle`的管理插件的方式，升级了自己的`vim`管理插件的方式，并替换、更改了部分常用插件。
 
 同时，将自己编写的部分插件，也融入到了这种新的vim插件管理方式中去。
 
@@ -34,19 +34,19 @@ vim 是一个高度可定制化的，文本编辑软件。因此，其个性化�
     	    \ call pairpunct#PairAdd_english_style()
     ```
 
-   对于中文标点，则可以使用 call pairpunct#PairAdd_chinese_style() 即可。
+   对于中文标点，则可以使用 `call pairpunct#PairAdd_chinese_style()` 即可。
 
 3. 为了与成对标点的快速输入配合，我还增加了插入模式的快速光标移动快捷键，作为配合。以方便地，
    跳到成对标点符号的右侧；
 
-   如 i_A-l; 此外还有 i_A-h,i_A-i,i_A-k。分别表示光标向左、向右、向上、行下移动一个字符。
+   如 `i_A-l`; 此外还有 `i_A-h`,`i_A-j`,`i_A-k`。分别表示光标向右、向左、向下、行上移动一个字符。
 
 4. 此外，还有 `system.vim` 插件，以方便地从(g)vim中，呼叫出文件系统浏览器、shell/cmd窗口，等等。
    另外，该插件还附带有 `nerdtree_plugin/` 插件，可以支持在NERDTree窗口中，通过回车键，
    执行`文件系统浏览器`的打开光标行文件夹。以及，用`系统打开方式`打开光标行所在文件。
 
 5. 为了方便编写cpp程序，以及，用cmake管理工程，我还额外配套了一个二进制工具：
-   gensketch.vim 和 vim 脚本 simple-cmake.vim；分别用来自动创建 `.gitignore`；批量创建cpp的头文件和实现文件；
+   `gensketch.vim` 和 `vim` 脚本 `simple-cmake.vim`；分别用来自动创建 `.gitignore`；批量创建cpp的头文件和实现文件；
    以及，批量创建cmake工程，或者qt工程文件。这些，都是基于模板来创建的。
 
 6. 自定义text（.txt）文本插件；我将text文本文件，重新设计为，以`*`前缀为标题行标志的文件，
@@ -147,12 +147,12 @@ Plugin 'rking/ag.vim'
 
 ## FAQ
 
-Q: 如何让NERDTree 插件可以使用 vim-devicons 图标字体？
+Q: 如何让 `NERDTree` 插件可以使用 `vim-devicons` 图标字体？
 
 A: 请参考 https://github.com/chxuan/vimplus 中，sh按照脚本中描述，进行操作。
 
-Q: 为什么在安装 vim-devicons 插件之后， NERDTree 中只有部分图标字体正常显示，而相当部分是乱码“中文”？
+Q: 为什么在安装 `vim-devicons` 插件之后， `NERDTree` 中只有部分图标字体正常显示，而相当部分是乱码“中文”？
 
-A: 可能是设置了guifontwide 属性的原因；vim-devicons 所用字体，会与部分中文字体混淆；
-   此时需要执行 `:set guifontwide=` ，清空 gfw 值即可。
+A: 可能是设置了 `guifontwide` 属性的原因；`vim-devicons` 所用字体，会与部分中文字体混淆；
+   此时需要执行 `:set guifontwide=` ，清空 `gfw` 值即可。
 
