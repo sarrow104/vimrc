@@ -116,6 +116,7 @@ Plugin 'plasticboy/vim-markdown'
 " Plugin 'jansenm/vim-cmake' " depends on -> neocompletecache not so good
 
 " utility tools
+Plugin 'rkitover/vimpager'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Shougo/unite.vim' " needed by vimfiler
 Plugin 'Shougo/vimfiler.vim'
@@ -123,7 +124,7 @@ Plugin 'Shougo/vimfiler.vim'
 "Plugin 'bling/vim-airline.git'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-
+Plugin 'dyng/ctrlsf.vim' " Search tool; using ack, ag or pt
 Plugin 'hynek/vim-python-pep8-indent' " Pythonindent 2016-05-22
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'lilydjwg/fcitx.vim.git'
@@ -168,6 +169,26 @@ Plugin 'rking/ag.vim'
 call vundle#end()            " required
 filetype plugin indent on    " required
 """""""""""""""""""""""""""""""""""""""""""""}}}
+
+" vimpager {{{1
+"set rtp^=$HOME/.vim/bundle/vimpager
+"let g:vimpager = {}
+"let g:less     = {}
+"
+"let g:less.enabled = 0
+"let g:vimpager.gvim = 1
+"let g:less.hlsearch = 0
+"let g:vimpager.X11 = 0
+"let g:less.scrolloff = 5
+"
+"if exists('g:vimpager.enabled')
+"  if exists('g:vimpager.ptree') && g:vimpager.ptree[-2] == 'wman'
+"    set ft=man
+"  endif
+"endif
+
+" turn on less mode
+runtime macros/less.vim
 
 " YouCompleteMe {{{1
 " FIXME
@@ -1061,6 +1082,32 @@ endfunction
 
 command -nargs=1 -complete=file Sav	call s:ForceSave(<q-args>)
 command -nargs=1 -complete=file Write	call s:ForceWrite(<q-args>)
+
+function! s:EditAndJump(path) " {{{2
+    let l:num = -1
+    let l:path = a:path
+
+    if !filereadable(l:path)
+        let l:matched = matchlist(a:path,  '^\(.\{-}\)\%(|\|:\)\(\d\+\)$')
+        if !empty(l:matched) && len(l:matched[2]) > 0
+            let l:num = l:matched[2]
+            let l:path = l:matched[1]
+        endif
+    endif
+
+    if !filereadable(l:path)
+        echohl WarningMsg
+        echo "file \"" . l:path . "\" not readable"
+        echohl NONE
+        return
+    endif
+    silent execute "e " . l:path
+    if l:num > 0
+        silent execute l:num
+    endif
+endfunction
+
+command -nargs=1 -complete=file Edit	call s:EditAndJump(<q-args>)
 
 "  FileType Spcific Extension:		{{{1
 "" NOTE: sw : shiftwidth; ts : tabstop; et : expandtab; gfn : guifont; nu : number; fdm : foldermethod;
