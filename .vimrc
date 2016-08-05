@@ -37,6 +37,14 @@ if $TERM=='cygwin'
     finish
 endif
 
+" Indert empty Line here
+" http://stackoverflow.com/questions/598113/can-terminals-detect-shift-enter-or-control-enter
+" 这里提到，可以先在终端中的vim，实验插入模式，实际插入的字符是上面(先按<C-V>转义)
+" 然后，用实际输出字符，替换"失灵"快捷键设置即可；
+if !has('gui_running')
+    vnoremap y "+y
+endif
+
 let mapleader = ","
 
 " Vundle stuffes {{{1
@@ -53,7 +61,7 @@ call vundle#begin()
 
 " let Vundle manage Vundle
 " required!
-Plugin 'VundleVim/Vundle.vim'
+Plugin 'sarrow104/Vundle.vim'
 
 " Sample:
 " Plugin 'L9'                  " plugin from http://vim-scripts.org/vim/scripts.html
@@ -72,8 +80,7 @@ Plugin 'valloric/MatchTagAlways'
 Plugin 'majutsushi/tagbar'
 
 "" vimshell+vimproc
-Plugin 'Shougo/vimshell.vim'
-Plugin 'Shougo/vimproc.vim'
+Plugin 'Shougo/vimshell.vim' " need 'Shougo/vimproc.vim'
 
 " Emmet - zencoding
 Plugin 'mattn/emmet-vim'
@@ -81,6 +88,12 @@ Plugin 'mattn/emmet-vim'
 Plugin 'SirVer/ultisnips'
 " Snippets are separated from the engine. Add this if you want them:
 Plugin 'honza/vim-snippets'
+
+" gdb with vim
+Plugin 'Shougo/vimproc.vim' " https://github.com/Shougo/vimproc.vim
+Plugin 'idanarye/vim-vebugger' " https://github.com/idanarye/vim-vebugger
+
+Plugin 'myusuf3/numbers.vim' " https://github.com/myusuf3/numbers.vim
 
 " my-scripts
 Plugin 'sarrow104/util.vim.git' " util#MySys()
@@ -100,12 +113,13 @@ Plugin 'sarrow104/simple-cmake.vim.git'
 
 " colorscheme & syntax highlighting
 Plugin 'mhartington/oceanic-next'
-Plugin 'Yggdroot/indentLine'
+Plugin 'Yggdroot/indentLine' " 显示代码缩进级别的插件；需要随时计算，可能有些慢
 Plugin 'Raimondi/delimitMate'
 Plugin 'andrwb/vim-lapis256'
 Plugin 'vim-jp/vim-cpp.git' " not so usefull. sad
 Plugin 'ArkBriar/vim-qmake' " .pro
 " Plugin 'jalcine/cmake.vim'
+Plugin 'richq/vim-cmake-completion' " TODO 增加 CMAKE_xxx <c-x><c-k>补全
 Plugin 'vim-scripts/JavaScript-Indent'
 Plugin 'evanmiller/nginx-vim-syntax'
 Plugin 'hail2u/vim-css3-syntax'
@@ -116,6 +130,10 @@ Plugin 'plasticboy/vim-markdown'
 " Plugin 'jansenm/vim-cmake' " depends on -> neocompletecache not so good
 
 " utility tools
+" NOTE: need SQL-workbench/J ultily
+"Plugin 'cosminadrianpopescu/vim-sql-workbench' " https://github.com/cosminadrianpopescu/vim-sql-workbench
+Plugin 'vim-scripts/dbext.vim' " https://github.com/vim-scripts/dbext.vim
+Plugin 'vim-scripts/SQLComplete.vim' " https://github.com/vim-scripts/SQLComplete.vim
 Plugin 'rkitover/vimpager'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Shougo/unite.vim' " needed by vimfiler
@@ -190,6 +208,38 @@ filetype plugin indent on    " required
 " turn on less mode
 runtime macros/less.vim
 
+" 'myusuf3/numbers.vim' " {{{1
+
+let g:numbers_exclude = ['tagbar', 'gundo', 'minibufexpl', 'nerdtree']
+"nnoremap <F3> :NumbersToggle<CR>
+
+" 'idanarye/vim-vebugger' {{{1
+
+let g:vebugger_view_source_cmd='edit'
+let g:vebugger_leader='<Leader>x'
+command! -nargs=? -complete=file GDB 		VBGstartGDB <q-args>
+
+" i      |:VBGstepIn|
+" o      |:VBGstepOver|
+" O      |:VBGstepOut|
+" c      |:VBGcontinue|
+" 
+" b      |:VBGtoggleBreakpointThisLine|
+" B      |:VBGclearBreakpoints|
+" 
+" e      |:VBGevalWordUnderCursor| in normal mode
+"        |:VBGevalSelectedText| in select mode
+" E      Prompt for an argument for |:VBGeval|
+" 
+" x      |:VBGexecute| current line in normal mode.
+"        |:VBGexecuteSelectedText| in select mode
+" X      Prompt for an argument for |:VBGexecute|
+" 
+" t      |:VBGtoggleTerminalBuffer|
+" r      Select mode only - |:VBGrawWriteSelectedText|
+" R      Prompt for an argument for |:VBGrawWrite|
+
+
 " YouCompleteMe {{{1
 " FIXME
 " ycm的跳转有bug！
@@ -255,6 +305,11 @@ let g:ycm_python_binary_path = '/usr/bin/python3'
 " 如何保证，在弹出补全窗口，或者无法补全的时候，<C-u>仍然可以删除之前的字符？
 "    exe 'inoremap <expr>' . key .
 "          \ ' pumvisible() ? "\<C-p>" : "\' . key .'"'
+
+" Yggdroot/indentLine ----------------------------------------------------------{{{1
+" NOTE: 缩进级别计算的语言类型，最好限制为程序语言，特别是一行不长的
+let g:indentLine_fileType = ['c', 'cpp', 'vim']
+let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
 
 " DoxygenToolkit ---------------------------------------------------------------{{{1
 let g:DoxygenToolkit_authorName="sarrow, 549506937@qq.com"
@@ -369,6 +424,9 @@ au FileType text let b:loaded_delimitMate = 1
   let g:NERDTreeWinSize=24
   let g:NERDTreeAutoDeleteBuffer=1
   let g:NERDTreeCascadeOpenSingleChildDir=0
+
+  command -nargs=0 NERDTreeHere	silent execute 'NERDTree '.expand("%:h")
+
 "" NERDTress File highlighting
 "  function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
 "  exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
@@ -414,46 +472,52 @@ let g:mta_set_default_matchtag_color = 1 " default : 1
 nnoremap <leader>% :MtaJumpToOtherTag<cr>
 
 " EasyMotion {{{1
-let g:EasyMotion_skipfoldedline = 0
-" https://github.com/easymotion/vim-easymotion/issues/223
-" There are option named :h <Over>(em-openallfold) which open all fold when searching. I guess it helps this problem.
-" 但是，上面这个选项，如何使用？
+if 1
+    let g:EasyMotion_skipfoldedline = 0
+    " https://github.com/easymotion/vim-easymotion/issues/223
+    " There are option named :h <Over>(em-openallfold) which open all fold when searching. I guess it helps this problem.
+    " 但是，上面这个选项，如何使用？
 
-" <Leader>f{char} to move to {char}
-map  <Leader>f <Plug>(easymotion-bd-f)
-nmap <Leader>f <Plug>(easymotion-overwin-f)
+    " <Leader>f{char} to move to {char}
+    map  <Leader>f <Plug>(easymotion-bd-f)
+    nmap <Leader>f <Plug>(easymotion-overwin-f)
 
-" s{char}{char} to move to {char}{char}
-nmap <Leader>s <Plug>(easymotion-overwin-f2)
+    " s{char}{char} to move to {char}{char}
+    nmap <Leader>s <Plug>(easymotion-overwin-f2)
 
-" Move to line
-map <Leader>L <Plug>(easymotion-bd-jk)
-nmap <Leader>L <Plug>(easymotion-overwin-line)
+    " Move to line
+    map <Leader>L <Plug>(easymotion-bd-jk)
+    nmap <Leader>L <Plug>(easymotion-overwin-line)
 
-" Move to word
-map  <Leader>w <Plug>(easymotion-bd-w)
-nmap <Leader>w <Plug>(easymotion-overwin-w)
+    " Move to word
+    map  <Leader>w <Plug>(easymotion-bd-w)
+    nmap <Leader>w <Plug>(easymotion-overwin-w)
 
-" Gif config
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
+    " Gif config
+    map  / <Plug>(easymotion-sn)
+    omap / <Plug>(easymotion-tn)
 
-" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
-" Without these mappings, `n` & `N` works fine. (These mappings just provide
-" different highlight method and have some other features )
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
+    " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+    " Without these mappings, `n` & `N` works fine. (These mappings just provide
+    " different highlight method and have some other features )
+    map  n <Plug>(easymotion-next)
+    map  N <Plug>(easymotion-prev)
 
-map <Leader>w <Plug>(easymotion-iskeyword-w)
-map <Leader>b <Plug>(easymotion-iskeyword-b)
+    map <Leader>w <Plug>(easymotion-iskeyword-w)
+    map <Leader>b <Plug>(easymotion-iskeyword-b)
 
-" Gif config
-"map <Leader>l <Plug>(easymotion-lineforward) " 与ycm的语法错误列表冲突
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
+    " Gif config
+    "map <Leader>l <Plug>(easymotion-lineforward) " 与ycm的语法错误列表冲突
+    map <Leader>j <Plug>(easymotion-j)
+    map <Leader>k <Plug>(easymotion-k)
+    map <Leader>h <Plug>(easymotion-linebackward)
 
-let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
+    " NOTE: 为了 避免和 vim-mark 冲突，这里使用双写的办法……
+    noremap ** /=expand("<cword>")<CR><CR>
+    noremap ## ?=expand("<cword>")<CR><CR>
+
+    let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
+endif
 
 " junegunn/vim-easy-align {{{1
 "xmap <leader>ga <Plug>(EasyAlign)
@@ -471,7 +535,11 @@ let g:Doxy_GlobalTemplateFile = '~/.vim/bundle/doxygen-support.vim/doxygen-suppo
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 2014-12-20 mksession ~/xxx.vim	{{{2
 set number
+set relativenumber
 set sessionoptions+=curdir
+
+"autocmd FocusLost *          :set number norelativenumber
+"autocmd FocusGained *        :set number relativenumber
 
 " NOTE mks 后面的字符串，不能以"括起来——mks会认为后面是注释，而使用
 " Session.vim……
@@ -986,25 +1054,6 @@ command! -nargs=? -complete=dir CD				:silent execute 'cd '
 "  	gq
 "set formatoptions+=mM
 "==== some util function ==============================================={{{1
-" Enhence '%' -- 'match it'		{{{2
-let s:chinese_punct_match_words = '「:」,［:］,【:】,｛:｝,《:》,『:』,“:”,‘:’,（:）,\(，\|、\):\(。\|？\|！\)'
-let s:none_punct = '\s\|\w'
-let s:left_ankle  = '\('.s:none_punct .'\|^\)'.'\@<='.'<\('.s:none_punct .'\|$\)\@='
-let s:right_ankle = '\('.s:none_punct .'\|^\)'.'\@<='.'>\('.s:none_punct .'\|$\|\:\|(\|{\)\@='
-
-function! Bind_punct_complete() " {{{2
-    "inoremap <buffer> <A-"> ""<Left>
-    "inoremap <buffer> <A-'> ''<Left>
-    "inoremap <buffer> <A-{> {}<Left>
-    "inoremap <buffer> <A-[> []<Left>
-    "inoremap <buffer> <A-(> ()<Left>
-    snoremap <buffer> <A-"> ""<Left>
-    snoremap <buffer> <A-'> ''<Left>
-    inoremap <buffer> <A-<> <><Left>
-    inoremap <buffer> <A-:> ::
-    inoremap <buffer> <A-:> ::
-endfunction
-
 function! Check_make_system() " {{{2
     if 0 == executable(&makeprg)
         if !exists('g:C_CPP_make_cmd_list')
@@ -1022,6 +1071,18 @@ function! Check_make_system() " {{{2
     endif
     command! -buffer -nargs=0 Makefile     new %:p:h\makefile
 endfunction
+
+function! s:DiffCurrentTabBatchCommand(command) " {{{2
+    for buf_nr in tabpagebuflist()
+	execute bufwinnr(buf_nr).'wincmd w'
+        if &diff == 1
+            execute a:command
+        endif
+    endfor
+endfunction
+
+command! -nargs=0 DiffBatchOff		call s:DiffCurrentTabBatchCommand("diffoff")
+command! -nargs=0 DiffBatchClose	call s:DiffCurrentTabBatchCommand("diffoff|bd")
 
 " TODO: 2009-04-07
 " quickfix 窗口编码识别问题
@@ -1083,7 +1144,7 @@ endfunction
 command -nargs=1 -complete=file Sav	call s:ForceSave(<q-args>)
 command -nargs=1 -complete=file Write	call s:ForceWrite(<q-args>)
 
-function! s:EditAndJump(path) " {{{2
+function! s:EditAndJump(path, new) " {{{2
     let l:num = -1
     let l:path = a:path
 
@@ -1095,28 +1156,39 @@ function! s:EditAndJump(path) " {{{2
         endif
     endif
 
-    if !filereadable(l:path)
-        echohl WarningMsg
-        echo "file \"" . l:path . "\" not readable"
-        echohl NONE
-        return
+    " NOTE: no need to check filereadable()!
+    "if !filereadable(l:path)
+    "    echohl WarningMsg
+    "    echo "file \"" . l:path . "\" not readable"
+    "    echohl NONE
+    "    return
+    "endif
+    if a:new != 0
+        silent execute "new "  . l:path
+    else
+        silent execute "edit " . l:path
     endif
-    silent execute "e " . l:path
-    if l:num > 0
+    if l:num > 0 && filereadable(l:path)
         silent execute l:num
     endif
 endfunction
 
-command -nargs=1 -complete=file Edit	call s:EditAndJump(<q-args>)
+command -nargs=1 -complete=file Edit	call s:EditAndJump(<q-args>, 0)
+command -nargs=1 -complete=file New	call s:EditAndJump(<q-args>, 1)
 
 "  FileType Spcific Extension:		{{{1
 "" NOTE: sw : shiftwidth; ts : tabstop; et : expandtab; gfn : guifont; nu : number; fdm : foldermethod;
+
+" FileType: sh {{{2
+au FileType sh
+	    \ call pairpunct#Bind_punct_complete()|
+	    \ call pairpunct#PairAdd_english_style()
 
 " FileType: c,java,d,cpp {{{2
 au FileType c,java,d
 	    \ let g:load_doxygen_syntax=1|
 	    \ setlocal cindent cinoptions=:0,g0,t0,(0,W8|
-	    \ setlocal fo+=mM ts=4 sw=4 et nu fdm=marker|
+	    \ setlocal fo+=mM ts=4 sw=4 et nu rnu fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()|
 	    \ setlocal dictionary-=~/.vim/keywords/c-c++.txt dictionary+=~/.vim/keywords/c-c++.txt
@@ -1125,14 +1197,14 @@ au FileType c,java,d
 au FileType cpp
 	    \ let g:load_doxygen_syntax=1|
 	    \ setlocal cindent cinoptions=:0,g0,j1,(0,ws,Ws|
-	    \ setlocal fo+=mM ts=4 sw=4 et nu fdm=marker|
+	    \ setlocal fo+=mM ts=4 sw=4 et nu rnu fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()|
 	    \ setlocal dictionary-=~/.vim/keywords/c-c++.txt dictionary+=~/.vim/keywords/c-c++.txt
 
 " FileType: make {{{2
 autocmd FileType make
-	    \ setlocal fo+=mM ts=4 sw=4 nu fdm=marker|
+	    \ setlocal fo+=mM ts=4 sw=4 nu rnu fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()
 
@@ -1151,14 +1223,19 @@ au BufWritePre *.txt,*.cal " {{{2
 	    \ if (&fenc=='' || &fenc=='euc-cn') | set fenc=utf8 | endif
 
 au BufRead *.txt
-			\ if expand("%:t") != "CMakeLists.txt" | setfiletype text | endif
+            \ if expand("%:t") != "CMakeLists.txt" | setfiletype text | endif
 
 au FileType text
-	    \ if line('$') == 1 && getline('$') == '' | set fenc=cp936 | endif |
-	    \ setlocal ts=8 sw=8 nu noet fo+=qnmM tw=80
+            \ if line('$') == 1 && getline('$') == '' | set fenc=utf8 | endif |
+            \ setlocal ts=8 sw=8 nu rnu noet fo+=qnmM tw=80|
+            \ call pairpunct#PairAdd_chinese_style()|
+            \ call pairpunct#PairVisual_chinese_style()
+
+au FileType text,markdown
+            \ setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
 
 au FileType xml
-	    \ setlocal ts=4 sw=4 number|
+            \ setlocal ts=4 sw=4 nu rnu |
             \ call pairpunct#Bind_punct_complete()|
             \ call pairpunct#PairAdd_english_style()
 
@@ -1178,7 +1255,9 @@ if !filereadable("~/.vim/keywords/cmake.txt")
 	au FileType cmake setlocal dictionary-=~/.vim/keywords/cmake.txt dictionary+=~/.vim/keywords/cmake.txt
 endif
 
-autocmd FileType cmake call pairpunct#PairAdd_english_style()
+autocmd FileType cmake
+            \ setlocal ts=4 sw=4|
+            \ call pairpunct#PairAdd_english_style()
 
 " FileType: vim-scripts {{{2
 autocmd FileType vim
@@ -1249,6 +1328,27 @@ nnoremap gs	:call system#Gui_execut_this(expand("<cfile>"))<CR>
 vnoremap gs	y:call system#Gui_execut_this(getreg('"'))<CR>
 "vnoremap gs	y:call system#OS_open_file(substitute(@", '/', '\', 'g'))<CR>
 " End:2009一月27
+
+function! s:Url_git_https2ssl()
+    silent '<,'>s`\<https:\/\/\(\w\+\.\w\+\)\/\(\w\+\)\/\([a-zA-Z\.]\+\)`git@\1:\2/\3`ge
+endfunction
+command! -nargs=0 -range=% UrlGitConverter	call <SID>Url_git_https2ssl()<CR>
+
+function! s:InsertNLBetweenCurlyBraces()
+    if col('.') >= 2 && getline('.')[col('.') - 1] == '}' && getline('.')[col('.') - 2] == '{'
+        silent execute "normal! i\<CR>\<Esc>k"
+        " NOTE: 插入一个空格，保持缩进
+        silent execute "normal o \<Backspace>"
+    else
+        if col('.') >= len(getline('.'))
+            silent execute "normal! a\<CR>"
+        else
+            silent execute "normal! i\<CR>"
+        endif
+    endif
+endfunction
+
+inoremap <CR>   <C-o>:call <SID>InsertNLBetweenCurlyBraces()<CR>
 
 " Sarrow:2009一月13
 " execute selection
