@@ -1,0 +1,67 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# 
+**/Release/
+**/Debug/
+**/log/
+**/v14/
+**/build-CreateProtocol-Desktop_Qt_5_5_1_MinGW_32bit-Debug/
+
+# backup
+*.bak
+
+# cmake/ clean
+/cmake/*
+!/cmake/CMakeLists.txt
+!/cmake/Makefile
+
+# ctags & cscope
+# NOTE ag can not recongnize "**/"
+**/cscope.files
+**/cscope.out
+**/tags
+cscope.files
+cscope.out
+tags
+
+# vim:YCM
+**/.ycm_extra_conf.py
+**/.ycm_extra_conf.pyc
+
+# ignore vs path
+#/vs/vs2012/
+*.sdf
+*.suo
+*.opensdf
+*.opendb
+*.filters
+*.user
+
+update
