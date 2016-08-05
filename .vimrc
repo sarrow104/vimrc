@@ -217,7 +217,7 @@ let g:numbers_exclude = ['tagbar', 'gundo', 'minibufexpl', 'nerdtree']
 
 let g:vebugger_view_source_cmd='edit'
 let g:vebugger_leader='<Leader>x'
-command! -nargs=? -complete=file GDB 		VBGstartGDB <q-args>
+command! -nargs=* -complete=file GDB 		VBGstartGDB <q-args>
 
 " i      |:VBGstepIn|
 " o      |:VBGstepOver|
