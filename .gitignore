@@ -52,8 +52,6 @@ cscope.out
 tags
 
 # vim:YCM
-**/.ycm_extra_conf.py
-**/.ycm_extra_conf.pyc
 
 # ignore vs path
 #/vs/vs2012/
@@ -65,3 +63,6 @@ tags
 *.user
 
 update
+
+bundle/
+sessions/
