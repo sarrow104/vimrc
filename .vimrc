@@ -109,6 +109,10 @@ Plugin 'idanarye/vim-vebugger' " https://github.com/idanarye/vim-vebugger
 
 Plugin 'myusuf3/numbers.vim' " https://github.com/myusuf3/numbers.vim
 
+" NOTE: 这是备份自
+" https://github.com/lilydjwg/dotvim/blob/master/plugin/escalt.vim
+Plugin 'WinterXMQ/escalt.vim' " https://github.com/WinterXMQ/escalt.vim
+
 " my-scripts
 Plugin 'sarrow104/util.vim.git' " util#MySys()
 Plugin 'sarrow104/msg.vim.git' " msg#xxx()
@@ -154,7 +158,6 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'Shougo/unite.vim' " needed by vimfiler
 Plugin 'Shougo/vimfiler.vim'
 " Buffer and status line
-"Plugin 'bling/vim-airline.git'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'dyng/ctrlsf.vim' " Search tool; using ack, ag or pt
@@ -190,8 +193,10 @@ Plugin 'ashisha/image.vim' " what for ?
 " Plugin 'kien/ctrlp.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 
-" utility tools devicons must the last!
-Plugin 'ryanoasis/vim-devicons' " Powerline(air-line), Nerd Font
+if has('gui_running')
+    " utility tools devicons must the last!
+    Plugin 'ryanoasis/vim-devicons' " Powerline(air-line), Nerd Font
+endif
 
 " @ Plugin --- [ Code Sreach ]
 Plugin 'rking/ag.vim'
@@ -235,158 +240,172 @@ if globpath(&rtp, 'plugin/ctrlsf.vim') != ""
 endif
 
 " fatih/vim-go.git  " https://github.com/fatih/vim-go.git {{{1
-let g:go_disable_autoinstall = 0
+if globpath(&rtp, 'plugin/go.vim') != ""
+    let g:go_disable_autoinstall = 0
+endif
 
 " 'xolox/vim-lua-ftplugin' "  {{{1
-let g:lua_complete_omni = 1
-" Here's the black list:
-let g:lua_omni_blacklist = ['pl\.strict', 'lgi\..']
-  
-"" Here's the resulting regular expression pattern:
-"'^\(pl\.strict\|lgi\..\)$'
+if globpath(&rtp, 'plugin/lua-ftplugin.vim') != ""
+    let g:lua_complete_omni = 1
+    " Here's the black list:
+    let g:lua_omni_blacklist = ['pl\.strict', 'lgi\..']
+
+    "" Here's the resulting regular expression pattern:
+    "'^\(pl\.strict\|lgi\..\)$'
+endif
 
 " vimpager {{{1
-"set rtp^=$HOME/.vim/bundle/vimpager
-"let g:vimpager = {}
-"let g:less     = {}
-"
-"let g:less.enabled = 0
-"let g:vimpager.gvim = 1
-"let g:less.hlsearch = 0
-"let g:vimpager.X11 = 0
-"let g:less.scrolloff = 5
-"
-"if exists('g:vimpager.enabled')
-"  if exists('g:vimpager.ptree') && g:vimpager.ptree[-2] == 'wman'
-"    set ft=man
-"  endif
-"endif
+if globpath(&rtp, 'plugin/vimpager.vim') != ""
+    "set rtp^=$HOME/.vim/bundle/vimpager
+    "let g:vimpager = {}
+    "let g:less     = {}
+    "
+    "let g:less.enabled = 0
+    "let g:vimpager.gvim = 1
+    "let g:less.hlsearch = 0
+    "let g:vimpager.X11 = 0
+    "let g:less.scrolloff = 5
+    "
+    "if exists('g:vimpager.enabled')
+    "  if exists('g:vimpager.ptree') && g:vimpager.ptree[-2] == 'wman'
+    "    set ft=man
+    "  endif
+    "endif
 
-" turn on less mode
-runtime macros/less.vim
+    " turn on less mode
+    runtime macros/less.vim
+endif
 
 " 'myusuf3/numbers.vim' " {{{1
-
-let g:numbers_exclude = ['tagbar', 'gundo', 'minibufexpl', 'nerdtree']
-"nnoremap <F3> :NumbersToggle<CR>
+if globpath(&rtp, 'plugin/numbers.vim') != ""
+    let g:numbers_exclude = ['tagbar', 'gundo', 'minibufexpl', 'nerdtree']
+endif
 
 " 'idanarye/vim-vebugger' {{{1
+if globpath(&rtp, 'plugin/vebugger.vim') != ""
+    let g:vebugger_view_source_cmd='edit'
+    let g:vebugger_leader='<Leader>x'
 
-let g:vebugger_view_source_cmd='edit'
-let g:vebugger_leader='<Leader>x'
+    command! -nargs=+ -complete=file GDB call vebugger#gdb#start([<f-args>][0], {'args':[<f-args>][1:]})
 
-command! -nargs=+ -complete=file GDB call vebugger#gdb#start([<f-args>][0], {'args':[<f-args>][1:]})
-
-" i      |:VBGstepIn|
-" o      |:VBGstepOver|
-" O      |:VBGstepOut|
-" c      |:VBGcontinue|
-" 
-" b      |:VBGtoggleBreakpointThisLine|
-" B      |:VBGclearBreakpoints|
-" 
-" e      |:VBGevalWordUnderCursor| in normal mode
-"        |:VBGevalSelectedText| in select mode
-" E      Prompt for an argument for |:VBGeval|
-" 
-" x      |:VBGexecute| current line in normal mode.
-"        |:VBGexecuteSelectedText| in select mode
-" X      Prompt for an argument for |:VBGexecute|
-" 
-" t      |:VBGtoggleTerminalBuffer|
-" r      Select mode only - |:VBGrawWriteSelectedText|
-" R      Prompt for an argument for |:VBGrawWrite|
-
+    " i      |:VBGstepIn|
+    " o      |:VBGstepOver|
+    " O      |:VBGstepOut|
+    " c      |:VBGcontinue|
+    " 
+    " b      |:VBGtoggleBreakpointThisLine|
+    " B      |:VBGclearBreakpoints|
+    " 
+    " e      |:VBGevalWordUnderCursor| in normal mode
+    "        |:VBGevalSelectedText| in select mode
+    " E      Prompt for an argument for |:VBGeval|
+    " 
+    " x      |:VBGexecute| current line in normal mode.
+    "        |:VBGexecuteSelectedText| in select mode
+    " X      Prompt for an argument for |:VBGexecute|
+    " 
+    " t      |:VBGtoggleTerminalBuffer|
+    " r      Select mode only - |:VBGrawWriteSelectedText|
+    " R      Prompt for an argument for |:VBGrawWrite|
+endif
 
 " YouCompleteMe {{{1
-" FIXME
-" ycm的跳转有bug！
-" GoToDeclaration GoToDefinition
-"
-" 当同一个源文件，有两个类，并且有同名的方法的时候，上面的这种跳转可能会识别到不同类的方法名上面去！
-nnoremap <C-F5> :YcmForceCompileAndDiagnostics<CR>
-nnoremap <C-F4> :YcmDiags<CR>
+if globpath(&rtp, 'plugin/youcompleteme.vim') != ""
+    " FIXME
+    " ycm的跳转有bug！
+    " GoToDeclaration GoToDefinition
+    "
+    " 当同一个源文件，有两个类，并且有同名的方法的时候，上面的这种跳转可能会识别到不同类的方法名上面去！
+    nnoremap <C-F5> :YcmForceCompileAndDiagnostics<CR>
+    nnoremap <C-F4> :YcmDiags<CR>
 
-nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap <leader>go :YcmCompleter GoToInclude<CR>
+    nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+    nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+    nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+    nnoremap <leader>go :YcmCompleter GoToInclude<CR>
 
-" let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-let g:ycm_global_ycm_extra_conf = '~/.vim/ycm/cpp/.ycm_extra_conf.py'
+    " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.vim/ycm/cpp/.ycm_extra_conf.py'
 
-let g:ycm_error_symbol = '>>'
-let g:ycm_warning_symbol = '>*'
+    let g:ycm_error_symbol = '>>'
+    let g:ycm_warning_symbol = '>*'
 
-let g:ycm_filetype_blacklist = {
-			\ 'tagbar' : 1,
-			\ 'qf' : 1,
-			\ 'notes' : 1,
-			\ 'markdown' : 1,
-			\ 'unite' : 1,
-			\ 'text' : 1,
-			\ 'vimwiki' : 1,
-			\ 'pandoc' : 1,
-			\ 'infolog' : 1,
-			\ 'mail' : 1,
-			\ 'mundo': 1,
-			\ 'fzf': 1,
-			\ 'ctrlp' : 1,
-			\ 'vim' : 1,
-			\ 'make': 1
-			\}
+    let g:ycm_filetype_blacklist = {
+                \ 'tagbar' : 1,
+                \ 'qf' : 1,
+                \ 'notes' : 1,
+                \ 'markdown' : 1,
+                \ 'unite' : 1,
+                \ 'text' : 1,
+                \ 'vimwiki' : 1,
+                \ 'pandoc' : 1,
+                \ 'infolog' : 1,
+                \ 'mail' : 1,
+                \ 'mundo': 1,
+                \ 'fzf': 1,
+                \ 'ctrlp' : 1,
+                \ 'vim' : 1,
+                \ 'make': 1
+                \}
 
-" 补全按键，YCM默认是'<C-Space>'
-let g:ycm_key_invoke_completion = '<C-j>'
-" make YCM compatible with UltiSnips (using supertab)
-let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-let g:SuperTabDefaultCompletionType = '<C-n>'
+    " 补全按键，YCM默认是'<C-Space>'
+    let g:ycm_key_invoke_completion = '<C-j>'
+    " make YCM compatible with UltiSnips (using supertab)
+    let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+    let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 
-"Do not ask when starting vim
-let g:ycm_confirm_extra_conf = 0
-"let g:ycm_autoclose_preview_window_after_completion=1
+    let g:SuperTabDefaultCompletionType = '<C-n>'
 
-let g:syntastic_always_populate_loc_list = 1
+    "Do not ask when starting vim
+    let g:ycm_confirm_extra_conf = 0
+    "let g:ycm_autoclose_preview_window_after_completion=1
 
-" make YCM read identifiers from my tags files
-let g:ycm_collect_identifiers_from_tags_files = 1
+    let g:syntastic_always_populate_loc_list = 1
 
-command! -nargs=0 GenYcmConfig		call writefile(readfile(expand(g:ycm_global_ycm_extra_conf), 'b'), getcwd()."/.ycm_extra_conf.py", 'b')
+    " make YCM read identifiers from my tags files
+    let g:ycm_collect_identifiers_from_tags_files = 1
 
-let g:ycm_python_binary_path = '/usr/bin/python3'
+    command! -nargs=0 GenYcmConfig		call writefile(readfile(expand(g:ycm_global_ycm_extra_conf), 'b'), getcwd()."/.ycm_extra_conf.py", 'b')
 
-" NOTE:
-" 前后跳转，使用 <C-o> 和 <C-i>
+    let g:ycm_python_binary_path = '/usr/bin/python3'
+    " NOTE:
+    " 前后跳转，使用 <C-o> 和 <C-i>
 
-" TODO
-" 如何保证，在弹出补全窗口，或者无法补全的时候，<C-u>仍然可以删除之前的字符？
-"    exe 'inoremap <expr>' . key .
-"          \ ' pumvisible() ? "\<C-p>" : "\' . key .'"'
+    " TODO
+    " 如何保证，在弹出补全窗口，或者无法补全的时候，<C-u>仍然可以删除之前的字符？
+    "    exe 'inoremap <expr>' . key .
+    "          \ ' pumvisible() ? "\<C-p>" : "\' . key .'"'
+endif
 
 " Yggdroot/indentLine ----------------------------------------------------------{{{1
-" NOTE: 缩进级别计算的语言类型，最好限制为程序语言，特别是一行不长的
-let g:indentLine_fileType = ['c', 'cpp', 'vim']
-let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
+if globpath(&rtp, 'plugin/indentLine.vim') != ""
+    " NOTE: 缩进级别计算的语言类型，最好限制为程序语言，特别是一行不长的
+    let g:indentLine_fileType = ['c', 'cpp', 'vim']
+    let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
+endif
 
 " DoxygenToolkit ---------------------------------------------------------------{{{1
-let g:DoxygenToolkit_authorName="sarrow, 549506937@qq.com"
-let s:licenseTag = "Copyright(C)\<enter>"
-let s:licenseTag = s:licenseTag . "For free\<enter>"
-let s:licenseTag = s:licenseTag . "All right reserved\<enter>"
-let g:DoxygenToolkit_licenseTag = s:licenseTag
-let g:DoxygenToolkit_briefTag_funcName="yes"
-let g:doxygen_enhanced_color=1
-let g:DoxygenToolkit_commentType="Qt"
+if globpath(&rtp, 'plugin/DoxygenToolkit.vim') != ""
+    let g:DoxygenToolkit_authorName="sarrow, 549506937@qq.com"
+    let s:licenseTag = "Copyright(C)\<enter>"
+    let s:licenseTag = s:licenseTag . "For free\<enter>"
+    let s:licenseTag = s:licenseTag . "All right reserved\<enter>"
+    let g:DoxygenToolkit_licenseTag = s:licenseTag
+    let g:DoxygenToolkit_briefTag_funcName="yes"
+    let g:doxygen_enhanced_color=1
+    let g:DoxygenToolkit_commentType="Qt"
+endif
 
 " vim-devicons -------------------------------------------{{{1
-"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 11
-"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types\ 11
-let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
-let g:WebDevIconsUnicodeGlyphDoubleWidth = 0
-let g:webdevicons_conceal_nerdtree_brackets = 1
-let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
-set encoding=utf-8
+if globpath(&rtp, 'plugin/webdevicons.vim') != ""
+    "set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 11
+    "set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types\ 11
+    let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+    let g:WebDevIconsUnicodeGlyphDoubleWidth = 0
+    let g:webdevicons_conceal_nerdtree_brackets = 1
+    let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
+    set encoding=utf-8
+endif
 
 " vim-airline new 2016-07-14---------------------------------------------------------------{{{1
 if globpath(&rtp, 'plugin/airline.vim') != ""
@@ -454,82 +473,90 @@ endif
   "let g:airline_symbols.whitespace = 'Ξ'
 " set statusline=%f%m\ \[%{&ff}:%{&fenc}:%Y]\ %{pathshorten(simplify(getcwd()))}%=(0x%B)(%L\|%c%V)%P%<
 ""}}}
+
 " UltiSnips  " {{{1
+if globpath(&rtp, 'plugin/UltiSnips.vim') != ""
+    "let g:UltiSnipsJumpForwardTrigger="<c-j>"
+    "let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
-"let g:UltiSnipsJumpForwardTrigger="<c-j>"
-"let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+    let g:UltiSnipsExpandTrigger = "<tab>"
+    let g:UltiSnipsJumpForwardTrigger = "<tab>"
+    let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsEditSplit="context"
-let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
-let g:UltiSnipsListSnippets="<c-e>"
-
+    " If you want :UltiSnipsEdit to split your window.
+    let g:UltiSnipsEditSplit="vertical"
+    let g:UltiSnipsEditSplit="context"
+    let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
+    let g:UltiSnipsListSnippets="<c-e>"
+endif
 " delimitMate " {{{1
-" disable delimitMate
-let loaded_delimitMate = 1
-au FileType text let b:loaded_delimitMate = 1
-
+if globpath(&rtp, 'plugin/delimitMate.vim') != ""
+    " disable delimitMate
+    let loaded_delimitMate = 1
+    au FileType text let b:loaded_delimitMate = 1
+endif
 " NERDTree ------------------------------------------------------------------{{{1
 
-  map <C-\> :NERDTreeToggle<CR>
-  noremap <F4> :NERDTreeFind<CR>
-  autocmd StdinReadPre * let s:std_in=1
-  " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-  "let NERDTreeShowHidden=1
-  let g:NERDTreeWinSize=24
-  let g:NERDTreeAutoDeleteBuffer=1
-  let g:NERDTreeCascadeOpenSingleChildDir=0
+if globpath(&rtp, 'plugin/NERD_tree.vim') != ""
+    map <C-\> :NERDTreeToggle<CR>
+    noremap <F4> :NERDTreeFind<CR>
+    autocmd StdinReadPre * let s:std_in=1
+    " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+    "let NERDTreeShowHidden=1
+    let g:NERDTreeWinSize=24
+    let g:NERDTreeAutoDeleteBuffer=1
+    let g:NERDTreeCascadeOpenSingleChildDir=0
 
-  command -nargs=0 NERDTreeHere	silent execute 'NERDTree '.expand("%:h")
+    command -nargs=0 NERDTreeHere	silent execute 'NERDTree '.expand("%:h")
 
-"" NERDTress File highlighting
-"  function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
-"  exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
-"  exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
-"  endfunction
-"
-"  call NERDTreeHighlightFile('jade', 'green', 'none', 'green', 'none')
-"  call NERDTreeHighlightFile('md', 'blue', 'none', '#6699CC', 'none')
-"  call NERDTreeHighlightFile('config', 'yellow', 'none', '#d8a235', 'none')
-"  call NERDTreeHighlightFile('conf', 'yellow', 'none', '#d8a235', 'none')
-"  call NERDTreeHighlightFile('json', 'green', 'none', '#d8a235', 'none')
-"  call NERDTreeHighlightFile('html', 'yellow', 'none', '#d8a235', 'none')
-"  call NERDTreeHighlightFile('css', 'cyan', 'none', '#5486C0', 'none')
-"  call NERDTreeHighlightFile('scss', 'cyan', 'none', '#5486C0', 'none')
-"  call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', 'none')
-"  call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', 'none')
-"  call NERDTreeHighlightFile('ts', 'Blue', 'none', '#6699cc', 'none')
-"  call NERDTreeHighlightFile('ds_store', 'Gray', 'none', '#686868', 'none')
-"  call NERDTreeHighlightFile('gitconfig', 'black', 'none', '#686868', 'none')
-"  call NERDTreeHighlightFile('gitignore', 'Gray', 'none', '#7F7F7F', 'none')
-"}}}
+    "" NERDTress File highlighting
+    "  function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+    "  exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+    "  exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+    "  endfunction
+    "
+    "  call NERDTreeHighlightFile('jade', 'green', 'none', 'green', 'none')
+    "  call NERDTreeHighlightFile('md', 'blue', 'none', '#6699CC', 'none')
+    "  call NERDTreeHighlightFile('config', 'yellow', 'none', '#d8a235', 'none')
+    "  call NERDTreeHighlightFile('conf', 'yellow', 'none', '#d8a235', 'none')
+    "  call NERDTreeHighlightFile('json', 'green', 'none', '#d8a235', 'none')
+    "  call NERDTreeHighlightFile('html', 'yellow', 'none', '#d8a235', 'none')
+    "  call NERDTreeHighlightFile('css', 'cyan', 'none', '#5486C0', 'none')
+    "  call NERDTreeHighlightFile('scss', 'cyan', 'none', '#5486C0', 'none')
+    "  call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', 'none')
+    "  call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', 'none')
+    "  call NERDTreeHighlightFile('ts', 'Blue', 'none', '#6699cc', 'none')
+    "  call NERDTreeHighlightFile('ds_store', 'Gray', 'none', '#686868', 'none')
+    "  call NERDTreeHighlightFile('gitconfig', 'black', 'none', '#686868', 'none')
+    "  call NERDTreeHighlightFile('gitignore', 'Gray', 'none', '#7F7F7F', 'none')
+endif
+
 "suan/vim-instant-markdown {{{1
 " let g:instant_markdown_slow = 1
 "
 " https://github.com/vim-scripts/doxygen-support.vim {{{1
-let g:load_doxygen_syntax=1
+if globpath(&rtp, 'plugin/doxygen-support.vim') != ""
+    let g:load_doxygen_syntax=1
+endif
 
 " MatchTagAlways {{{1
-let g:mta_use_matchparen_group = 1 " default : 1
+if globpath(&rtp, 'plugin/MatchTagAlways.vim') != ""
+    let g:mta_use_matchparen_group = 1 " default : 1
 
-" default: { 'html' : 1, 'xhtml' : 1, 'xml' : 1, 'jinja' : 1 }
-let g:mta_filetypes = {
-    \ 'html' : 1,
-    \ 'xhtml' : 1,
-    \ 'xml' : 1,
-    \ 'jinja' : 1,
-    \}
+    " default: { 'html' : 1, 'xhtml' : 1, 'xml' : 1, 'jinja' : 1 }
+    let g:mta_filetypes = {
+                \ 'html' : 1,
+                \ 'xhtml' : 1,
+                \ 'xml' : 1,
+                \ 'jinja' : 1,
+                \}
 
-let g:mta_use_matchparen_group = 1 " default: 1
+    let g:mta_use_matchparen_group = 1 " default: 1
 
-let g:mta_set_default_matchtag_color = 1 " default : 1
+    let g:mta_set_default_matchtag_color = 1 " default : 1
 
-nnoremap <leader>% :MtaJumpToOtherTag<cr>
+    nnoremap <leader>% :MtaJumpToOtherTag<cr>
+endif
 
 " EasyMotion {{{1
 if globpath(&rtp, 'plugin/EasyMotion.vim') != ""
@@ -585,12 +612,16 @@ if globpath(&rtp, 'plugin/EasyMotion.vim') != ""
 endif
 
 " junegunn/vim-easy-align {{{1
-"xmap <leader>ga <Plug>(EasyAlign)
-vnoremap ga <Plug>(EasyAlign)
+if globpath(&rtp, 'plugin/easy_align.vim') != ""
+    "xmap <leader>ga <Plug>(EasyAlign)
+    vnoremap ga <Plug>(EasyAlign)
+endif
 
-" https://github.com/ArkBriar/vim-qmake .pro
-au BufRead *.qrc setfiletype xml
-au BufRead *.pro setfiletype qmake
+" https://github.com/ArkBriar/vim-qmake .pro " {{{1
+if globpath(&rtp, 'syntax/qmake.vim') != ""
+    au BufRead *.qrc setfiletype xml
+    au BufRead *.pro setfiletype qmake
+endif
 
 " doxygensupport {{{1
 let g:Doxy_GlobalTemplateFile = '~/.vim/bundle/doxygen-support.vim/doxygen-support/templates/doxygen.templates'
@@ -856,6 +887,7 @@ endif
 "    autocmd GUIEnter * set visualbell t_vb=
 "endif
 
+" Sarrow: 2016-08-18
 if $COLORTERM == 'gnome-terminal'
     "set term=gnome-256color
     set term=$TERM
@@ -1400,6 +1432,7 @@ noremap <A-$>	vip<ESC>$
 noremap <A-0>	vipo<ESC>0
 noremap <A-^>	vipo<ESC>^
 
+" TODO 这个应该纳入 system.vim/plugin
 " Sarrow:2009一月27
 " 使用系统函数查看文件——主要是区分于vim的nnoremap gf功能。
 " gs -- abbr.  goto shell ...
