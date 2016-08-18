@@ -1,0 +1,26 @@
+snippet xml "XML-node" b
+<?xml version="1.0" encoding="UTF-8"?>
+<$1>
+	$2
+</$1>
+endsnippet
+
+snippet s "XML-singleton node" b
+<${1:span} />
+endsnippet
+
+snippet cm "XML-comment" b
+<!-- $1 -->
+endsnippet
+
+snippet n "XML-node" b
+<${1:div}>
+	${2}
+</${1/(\w+).*/$1/}>
+endsnippet
+
+snippet a "xml-archer" b
+<a href="$1"${2: class="${3:link}"}>
+	$0
+</a>
+endsnippet
