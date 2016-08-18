@@ -1,0 +1,52 @@
+snippet tpl.simple "simple" b
+cmake_minimum_required(VERSION 2.6)
+project(${1})
+
+## Target
+aux_source_directory(. SRCS)
+add_executable($1 ${SRCS})
+
+## Compiler flags
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "-O2")        ## Optimize
+    set(CMAKE_EXE_LINKER_FLAGS "-s")  ## Strip binary
+endif()
+endsnippet
+
+snippet pthread "pthread" b
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+#lib${1} Threads::Threads
+endsnippet
+
+snippet boost "boost" b
+find_package(Boost COMPONENTS date_time filesystem system thread)
+#lib${1} ${Boost_LIBRARIES} rt
+endsnippet
+
+snippet ssl "openssl" b
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+find_package(Threads REQUIRED)
+
+#lib${1} Threads::Threads ssl crypto
+endsnippet
+
+snippet qt "qt lib" b
+add_definitions(-fPIC)
+
+set(CMAKE_AUTOMOC ON)
+
+# Runs UIC on specified files
+qt5_wrap_ui( UI_FILES_H ${UI_FILES} )
+# Runs RCC on specified files
+qt5_add_resources( QRC_FILES_CPP ${QRC_FILES} )
+# Runs lrelease on the specified files
+qt5_add_translation( QM_FILES ${TS_FILES} )
+
+find_package(Qt5Widgets REQUIRED) # find_xxxx 语句，必须在project()之后！
+find_package(Qt5Core REQUIRED)
+
+#lib${1} Qt5::Core Qt5::Widgets
+qt5_use_modules(${PROJECT_NAME} Widgets Xml XmlPatterns PrintSupport Svg WebKit WebKitWidgets Network Concurrent)
+endsnippet
