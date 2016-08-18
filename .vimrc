@@ -79,6 +79,20 @@ Plugin 'scrooloose/syntastic'
 Plugin 'valloric/MatchTagAlways'
 Plugin 'majutsushi/tagbar'
 
+" golang
+Plugin 'fatih/vim-go.git' " https://github.com/fatih/vim-go.git
+
+" Lua support
+Plugin 'tbastos/vim-lua'        " https://github.com/tbastos/vim-lua
+Plugin 'xolox/vim-lua-ftplugin' " https://github.com/xolox/vim-lua-ftplugin
+
+" Refactor for C, C++, Java, Pascal, VimL.
+Plugin 'LucHermitte/lh-vim-lib'
+Plugin 'LucHermitte/lh-tags'
+Plugin 'LucHermitte/lh-dev'
+"Plugin 'LucHermitte/lh-brackets' " NOTE: 定义了 '' 这种扩单引号的快捷键，与系统自带的回退编辑点功能冲突
+Plugin 'LucHermitte/vim-refactor'
+
 "" vimshell+vimproc
 Plugin 'Shougo/vimshell.vim' " need 'Shougo/vimproc.vim'
 
@@ -112,6 +126,7 @@ Plugin 'sarrow104/gensketch.vim.git'
 Plugin 'sarrow104/simple-cmake.vim.git'
 
 " colorscheme & syntax highlighting
+Plugin 'tomasr/molokai.git' " https://github.com/tomasr/molokai.git
 Plugin 'mhartington/oceanic-next'
 Plugin 'Yggdroot/indentLine' " 显示代码缩进级别的插件；需要随时计算，可能有些慢
 Plugin 'Raimondi/delimitMate'
@@ -188,6 +203,48 @@ call vundle#end()            " required
 filetype plugin indent on    " required
 """""""""""""""""""""""""""""""""""""""""""""}}}
 
+" dimasg/vim-mark " {{{1
+if globpath(&rtp, 'plugin/ctrlsf.vim') != "" && !globpath(&rtp, 'plugin/mark.vim') != ""
+    nmap <unique> <Leader>m/ <Plug>MarkSearchAnyNext
+    nmap <unique> <Leader>m? <Plug>MarkSearchAnyPrev
+endif
+
+" dyng/ctrlsf.vim " Search tool; using ack, ag or pt {{{1
+" NOTE: 不知道怎么回事，
+" noremap <C-/> 竟然无法使用！(<C-1>也不行；<C-a>可行)；执行 :normal <C-/>
+" 也不行！
+" 奇葩的是，execute "normal \<C-/>" 这样手动调用，就可以了？
+" 调用的，竟然是 'easymotion/vim-easymotion' 的 / 动作！
+" 注意 <A-/> 在终端，貌似是无法触发的……
+"
+" 原来，vim无法将 <C-/>用作快捷键；
+" http://vim.1045645.n5.nabble.com/How-to-map-Ctrl-td1192843.html
+"
+" 另外一个印证：
+" i_<C-V>_<C-/> 将得到的是 /；即，仍然触发 / 动作。
+" 有解决办法不？
+"
+" https://groups.google.com/forum/#!topic/vim_use/ypPtU10KObA
+"
+" 另外，用<C-_>来替换 <C-/> 只在某些情况(终端)下有效。
+" http://stackoverflow.com/questions/9051837/how-to-map-c-to-toggle-comments-in-vim
+"
+" TODO 应该对查找的发生位置，设定一个保险——避免在根目录、home目录进行查找！
+if globpath(&rtp, 'plugin/ctrlsf.vim') != ""
+    noremap <leader>/ :silent execute("CtrlSF " . expand("<cword>"))<CR>
+endif
+
+" fatih/vim-go.git  " https://github.com/fatih/vim-go.git {{{1
+let g:go_disable_autoinstall = 0
+
+" 'xolox/vim-lua-ftplugin' "  {{{1
+let g:lua_complete_omni = 1
+" Here's the black list:
+let g:lua_omni_blacklist = ['pl\.strict', 'lgi\..']
+  
+"" Here's the resulting regular expression pattern:
+"'^\(pl\.strict\|lgi\..\)$'
+
 " vimpager {{{1
 "set rtp^=$HOME/.vim/bundle/vimpager
 "let g:vimpager = {}
@@ -217,7 +274,8 @@ let g:numbers_exclude = ['tagbar', 'gundo', 'minibufexpl', 'nerdtree']
 
 let g:vebugger_view_source_cmd='edit'
 let g:vebugger_leader='<Leader>x'
-command! -nargs=* -complete=file GDB 		VBGstartGDB <q-args>
+
+command! -nargs=+ -complete=file GDB call vebugger#gdb#start([<f-args>][0], {'args':[<f-args>][1:]})
 
 " i      |:VBGstepIn|
 " o      |:VBGstepOver|
@@ -331,21 +389,23 @@ let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
 set encoding=utf-8
 
 " vim-airline new 2016-07-14---------------------------------------------------------------{{{1
-let g:airline_theme="badwolf"
-let g:airline_powerline_fonts = 1
-"let g:airline_section_b = '%{strftime("%c")}'
-"let g:airline_section_y = 'BN: %{bufnr("%")}'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
+if globpath(&rtp, 'plugin/airline.vim') != ""
+    let g:airline_theme="badwolf"
+    let g:airline_powerline_fonts = 1
+    "let g:airline_section_b = '%{strftime("%c")}'
+    "let g:airline_section_y = 'BN: %{bufnr("%")}'
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#left_sep = ' '
+    let g:airline#extensions#tabline#left_alt_sep = '|'
+    if !exists('g:airline_symbols')
+        let g:airline_symbols = {}
+    endif
+    let g:airline_left_sep = ''
+    let g:airline_left_alt_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_right_alt_sep = ''
+    " new 2016-07-14
 endif
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-" new 2016-07-14
 
 " vim-airline old 2016-07-14---------------------------------------------------------------{{{1
 "  let g:airline#extensions#tabline#enabled = 1
@@ -472,7 +532,7 @@ let g:mta_set_default_matchtag_color = 1 " default : 1
 nnoremap <leader>% :MtaJumpToOtherTag<cr>
 
 " EasyMotion {{{1
-if 1
+if globpath(&rtp, 'plugin/EasyMotion.vim') != ""
     let g:EasyMotion_skipfoldedline = 0
     " https://github.com/easymotion/vim-easymotion/issues/223
     " There are option named :h <Over>(em-openallfold) which open all fold when searching. I guess it helps this problem.
@@ -494,6 +554,10 @@ if 1
     nmap <Leader>w <Plug>(easymotion-overwin-w)
 
     " Gif config
+    "noremap  / <Plug>(easymotion-sn)
+    "omap  / <Plug>(easymotion-sn)
+
+    " Old:
     map  / <Plug>(easymotion-sn)
     omap / <Plug>(easymotion-tn)
 
@@ -512,6 +576,7 @@ if 1
     map <Leader>k <Plug>(easymotion-k)
     map <Leader>h <Plug>(easymotion-linebackward)
 
+    "noremap ** :execute 'normal /'.expand("<cword>").'\<CR>\<CR>'
     " NOTE: 为了 避免和 vim-mark 冲突，这里使用双写的办法……
     noremap ** /=expand("<cword>")<CR><CR>
     noremap ## ?=expand("<cword>")<CR><CR>
@@ -746,20 +811,22 @@ if MySys() == 'windows' " {{{2
 
 endif
 
-if has('gui_running')	" colorscheme 	{{{2
-    "" ColorScheme Setting
-    "colorscheme darkblue
-    "colorscheme torte
-    "colorscheme murphy
-    colorscheme desertEx
-    "colorscheme ir_black
-    "colorscheme InkPot  		" Dark theme
-    "colorscheme TAqua  		" Light theme
-else
-    "colorscheme desert256
-    "colorscheme lapis256
-    colorscheme default
-endif
+"if has('gui_running')	" colorscheme 	{{{2
+"    "" ColorScheme Setting
+"    "colorscheme darkblue
+"    "colorscheme torte
+"    "colorscheme murphy
+"    "colorscheme desertEx
+"    colorscheme molokai
+"    "colorscheme ir_black
+"    "colorscheme InkPot  		" Dark theme
+"    "colorscheme TAqua  		" Light theme
+"else
+"    "colorscheme desert256
+"    "colorscheme lapis256
+"    colorscheme default
+"endif
+colorscheme molokai
 
 if MySys() == "linux"
     winsize 100 50
@@ -1184,14 +1251,21 @@ au FileType sh
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()
 
-" FileType: c,java,d,cpp {{{2
+" FileType: c,java,d,cpp,go {{{2
 au FileType c,java,d
 	    \ let g:load_doxygen_syntax=1|
 	    \ setlocal cindent cinoptions=:0,g0,t0,(0,W8|
 	    \ setlocal fo+=mM ts=4 sw=4 et nu rnu fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()|
-	    \ setlocal dictionary-=~/.vim/keywords/c-c++.txt dictionary+=~/.vim/keywords/c-c++.txt
+	    \ setlocal dictionary+=~/.vim/keywords/c-c++.txt
+au FileType go
+	    \ let g:load_doxygen_syntax=1|
+	    \ setlocal cindent cinoptions=:0,g0,t0,(4,W8|
+	    \ setlocal fo+=mM ts=4 sw=4 et nu rnu fdm=marker|
+	    \ call pairpunct#Bind_punct_complete()|
+	    \ call pairpunct#PairAdd_english_style()|
+	    \ setlocal dictionary+=~/.vim/keywords/go.txt
 
 " NOTE http://stackoverflow.com/questions/8062608/vim-and-c11-lambda-auto-indentation
 au FileType cpp
@@ -1200,7 +1274,15 @@ au FileType cpp
 	    \ setlocal fo+=mM ts=4 sw=4 et nu rnu fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()|
-	    \ setlocal dictionary-=~/.vim/keywords/c-c++.txt dictionary+=~/.vim/keywords/c-c++.txt
+	    \ setlocal dictionary+=~/.vim/keywords/c-c++.txt
+
+function! s:InsertNLBetweenCurlyBraces()
+    if strpart(getline('.'), col('.') - 2, 2) == '{}'
+        return "\<CR>\<CR>\<Up>\<Tab>"
+    endif
+    return "\<CR>"
+endfun
+autocmd FileType c,cpp,java,d inoremap <CR> <C-R>=<SID>InsertNLBetweenCurlyBraces()<CR>
 
 " FileType: make {{{2
 autocmd FileType make
@@ -1334,31 +1416,11 @@ function! s:Url_git_https2ssl()
 endfunction
 command! -nargs=0 -range=% UrlGitConverter	call <SID>Url_git_https2ssl()<CR>
 
-function! s:InsertNLBetweenCurlyBraces()
-    if col('.') >= 2 && getline('.')[col('.') - 1] == '}' && getline('.')[col('.') - 2] == '{'
-        silent execute "normal! i\<CR>\<Esc>k"
-        " NOTE: 插入一个空格，保持缩进
-        silent execute "normal o \<Backspace>"
-    else
-        if col('.') >= len(getline('.'))
-            silent execute "normal! a\<CR>"
-        else
-            silent execute "normal! i\<CR>"
-        endif
-    endif
-endfunction
-
-inoremap <CR>   <C-o>:call <SID>InsertNLBetweenCurlyBraces()<CR>
-
 " Sarrow:2009一月13
 " execute selection
 " TODO 将加入编码转换的支持（utf8-->cp936）
 vnoremap <CR>   y:silent @"<CR>
 " End:2009一月13
-
-"" Insert Time Stamp at current position
-"nnoremap <F2> "=strftime('%Y-%m-%d')<CR>p
-"inoremap <F2> <C-R>=strftime('%Y-%m-%d')<CR>
 
 let g:strftime_format=
 	    \ '%Y'.'-'.
@@ -1454,9 +1516,9 @@ inoremap <C-l> <Del>
 noremap <A-h> h
 " NOTE 与text中文缩进重复
 " /.vim/bundle/txt.vim/syntax/text.vim|945
-"noremap <A-j> gj
-"noremap <A-k> gk
-noremap <A-l> l
+noremap <A-j> gj
+noremap <A-k> gk
+"noremap <A-l> l
 
 "select current word under cursor
 nnoremap <A-w> viw
