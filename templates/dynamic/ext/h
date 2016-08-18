@@ -1,0 +1,12 @@
+#!/bin/sh
+# Generate template content for a c/c++ header file.
+# usage: $0 <filename>
+[ -z "$1" ] && exit 1
+
+head_def=`echo __${1}__ | tr "a-z.-" "A-Z__"`
+cat << EOF
+#ifndef $head_def
+#define $head_def
+
+#endif    // #ifndef $head_def
+EOF
