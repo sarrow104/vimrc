@@ -1,0 +1,183 @@
+# from /home/sarrow/Sources/vim/cppenv/snippets/all.snippets|41
+snippet "def ([\d\w]+)" "Make Cxx Class Method Definitions" r
+`!p
+import vim, sys
+sys.path.append('/home/sarrow/Sources/vim/cppenv/pyclang')
+import gen_methods
+class_name = match.group(1)
+code, err = gen_methods.gen_methods_definition(vim.current.buffer.name, class_name)
+snip.rv = code + err`
+endsnippet
+
+snippet usingmulty "using std::..."
+using std::string;
+using std::vector;
+using std::map;
+using std::cout;
+using std::endl;
+endsnippet
+
+snippet ifdefwin32 "#ifdef __WIN32__ ..."
+#ifdef __WIN32__${1}
+#else
+#endif
+endsnippet
+
+snippet try "try {} catch() ..."
+try {
+    $1
+}
+catch (${2:std::exception& e}) {
+    $3
+}
+endsnippet
+
+snippet ff "head file guarder" b
+#ifndef __`!v substitute(toupper(expand("%:t")),'\.','_',"g").'_'.localtime()`__
+#define __`!v substitute(toupper(expand("%:t")),'\.','_',"g").'_'.localtime()`__
+
+$0
+
+
+#endif /* __`!v substitute(toupper(expand("%:t")),'\.','_',"g").'_'.localtime()`__ */
+endsnippet
+
+snippet df "define" b
+#define $0
+endsnippet
+
+snippet #ifel "ifdef else endif" b
+#ifdef ${1:SYMBOL}
+${2}
+#else
+${3}
+#endif // ${1/([A-Za-z0-9_]+).*/$1/}
+endsnippet
+
+snippet def "#ifndef ... #define ... #endif"
+#ifndef ${1/([A-Za-z0-9_]+).*/$1/}
+#define ${1:SYMBOL} ${2:value}
+#endif
+endsnippet
+
+snippet is "include from system" b
+#include <$0>
+endsnippet
+
+snippet in "include from locale" b
+#include "$0"
+endsnippet
+
+snippet for "for () " b
+for (${1:int i = 0}; ${2}; ${3:++i}) {
+    ${4}
+}
+endsnippet
+
+snippet if "if ()" b
+if (${1}) {
+    ${2}
+}
+endsnippet
+
+snippet el "else {}" b
+else {
+    $0
+}
+endsnippet
+
+snippet nms "namespace " b
+namespace ${1} {
+    ${2}
+} // namespace ${1/(\w+).*/$1/}
+endsnippet
+
+snippet main "main () {} " b
+#include <cstdio>
+#include <cstdlib>
+
+#include <iostream>
+
+int main (int argc, char *argv[])
+{
+    (void) argc;
+    (void) argv;
+    $0
+
+    return EXIT_SUCCESS;
+}
+endsnippet
+
+snippet sw "switch {} " b
+switch (${1}) {
+case ${2}:
+    break;
+${3}
+default:${4}
+    break;
+}
+endsnippet
+
+snippet ca "case break" b
+case ${1}:
+    ${2};
+    break;
+endsnippet
+
+snippet wh "while {}" b
+while (${1}) {
+    ${2:/* empty */};
+}
+endsnippet
+
+snippet cl "class {}" b
+class ${1:`!v expand("%:t:r")`}
+{
+public:
+    ${1/(\w+).*/$1/}();
+    ~${1/(\w+).*/$1/}() = default;
+
+public:
+    ${1/(\w+).*/$1/}(${1/(\w+).*/$1/}&& ) = default;
+    ${1/(\w+).*/$1/}& operator = (${1/(\w+).*/$1/}&& ) = default;
+
+public:
+    ${1/(\w+).*/$1/}(const ${1/(\w+).*/$1/}& ) = default;
+    ${1/(\w+).*/$1/}& operator = (const ${1/(\w+).*/$1/}& ) = default;
+
+public:
+    ${2}
+
+private:
+    ${3}
+};
+endsnippet
+
+snippet header
+/**
+ * ================================================================================
+ *
+ *       Filename:  `!p snip.rv = fn`
+ *
+ *    Description:  ${1}
+ *
+ *        Version:  1.0
+ *        Created:  `!v strftime("%Y-%m-%d")`
+ *
+ *         Author:  `echo $USER`
+ *
+ * ================================================================================
+ */
+endsnippet
+
+snippet qt-action "qt-action" b
+${1} = new QAction(QIcon(":/images/${2:file-open}"),
+                         tr("${3:Open...}"),
+                         this);
+
+$1->setShortcuts(${4:QKeySequence::Open});
+$1->setStatusTip(tr("${5:Open an existing file.}"));
+
+
+connect($1, &QAction::${6:triggered}, this, ${7:&MainWindow::open});
+endsnippet
