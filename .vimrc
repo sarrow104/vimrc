@@ -242,6 +242,12 @@ endif
 " fatih/vim-go.git  " https://github.com/fatih/vim-go.git {{{1
 if globpath(&rtp, 'plugin/go.vim') != ""
     let g:go_disable_autoinstall = 0
+
+    let g:go_highlight_functions = 1
+    let g:go_highlight_methods = 1
+    let g:go_highlight_structs = 1
+    let g:go_highlight_operators = 1
+    let g:go_highlight_build_constraints = 1
 endif
 
 " 'xolox/vim-lua-ftplugin' "  {{{1
@@ -276,6 +282,48 @@ if globpath(&rtp, 'plugin/vimpager.vim') != ""
     runtime macros/less.vim
 endif
 
+" 'majutsushi/tagbar' " {{{1
+" ctags-exuberant
+"let g:tagbar_type_go = {
+"    \ 'ctagstype': 'go',
+"    \ 'kinds' : [
+"        \'p:package',
+"        \'f:function',
+"        \'v:variables',
+"        \'t:type',
+"        \'c:const'
+"    \]
+"\}
+
+" gotags
+let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+        \ 'p:package',
+        \ 'i:imports:1',
+        \ 'c:constants',
+        \ 'v:variables',
+        \ 't:types',
+        \ 'n:interfaces',
+        \ 'w:fields',
+        \ 'e:embedded',
+        \ 'm:methods',
+        \ 'r:constructor',
+        \ 'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+        \ 't' : 'ctype',
+        \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+        \ 'ctype' : 't',
+        \ 'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : '$GOPATH/bin/gotags',
+    \ 'ctagsargs' : '-sort -silent'
+\ }
+
 " 'myusuf3/numbers.vim' " {{{1
 if globpath(&rtp, 'plugin/numbers.vim') != ""
     let g:numbers_exclude = ['tagbar', 'gundo', 'minibufexpl', 'nerdtree']
@@ -292,18 +340,18 @@ if globpath(&rtp, 'plugin/vebugger.vim') != ""
     " o      |:VBGstepOver|
     " O      |:VBGstepOut|
     " c      |:VBGcontinue|
-    " 
+    "
     " b      |:VBGtoggleBreakpointThisLine|
     " B      |:VBGclearBreakpoints|
-    " 
+    "
     " e      |:VBGevalWordUnderCursor| in normal mode
     "        |:VBGevalSelectedText| in select mode
     " E      Prompt for an argument for |:VBGeval|
-    " 
+    "
     " x      |:VBGexecute| current line in normal mode.
     "        |:VBGexecuteSelectedText| in select mode
     " X      Prompt for an argument for |:VBGexecute|
-    " 
+    "
     " t      |:VBGtoggleTerminalBuffer|
     " r      Select mode only - |:VBGrawWriteSelectedText|
     " R      Prompt for an argument for |:VBGrawWrite|
@@ -673,6 +721,11 @@ command! -nargs=?	MKS	        call MakeSession(<q-args>)
 command! -nargs=0	MKSInfo	    call MakeSesionInfo()
 "command! -nargs=0	MKS	silent execute ' mks! '. (v:this_session == '' ? '~/last.vim' : v:this_session) . ''
 " mks d:\Program Files\vim\home\problem.vim
+
+if globpath(&rtp, 'plugin/session.vim') != ""
+    command! -bar -bang -nargs=? -complete=customlist,xolox#session#complete_names_with_suggestions SS call xolox#session#save_cmd(<q-args>, <q-bang>, 'SaveSession')
+    command! -bar -bang -nargs=? -complete=customlist,xolox#session#complete_names OS call xolox#session#open_cmd(<q-args>, <q-bang>, 'OpenSession')
+endif
 
 " 使用英文菜单,工具条及消息提示
 set langmenu=none
@@ -1314,7 +1367,7 @@ function! s:InsertNLBetweenCurlyBraces()
     endif
     return "\<CR>"
 endfun
-autocmd FileType c,cpp,java,d inoremap <CR> <C-R>=<SID>InsertNLBetweenCurlyBraces()<CR>
+autocmd FileType c,cpp,java,d,go inoremap <CR> <C-R>=<SID>InsertNLBetweenCurlyBraces()<CR>
 
 " FileType: make {{{2
 autocmd FileType make
