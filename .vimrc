@@ -227,7 +227,7 @@ if globpath(&rtp, 'plugin/autoformat.vim') != ""
     let g:formatterpath = ['/usr/bin/clang-format-3.8']
 endif
 
-" 'rhysd/vim-clang-format' "https://github.com/rhysd/vim-clang-format
+" 'rhysd/vim-clang-format' "https://github.com/rhysd/vim-clang-format {{{1
 if globpath(&rtp, 'plugin/clang_format.vim') != ""
     let g:clang_format#command='/usr/bin/clang-format-3.8'
     "let g:clang_format#extra_args=''
@@ -593,8 +593,8 @@ if globpath(&rtp, 'plugin/delimitMate.vim') != ""
     let loaded_delimitMate = 1
     au FileType text let b:loaded_delimitMate = 1
 endif
-" NERDTree ------------------------------------------------------------------{{{1
 
+" NERDTree ------------------------------------------------------------------{{{1
 if globpath(&rtp, 'plugin/NERD_tree.vim') != ""
     map <C-\> :NERDTreeToggle<CR>
     noremap <F4> :NERDTreeFind<CR>
