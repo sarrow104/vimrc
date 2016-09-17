@@ -113,6 +113,9 @@ Plugin 'myusuf3/numbers.vim' " https://github.com/myusuf3/numbers.vim
 " https://github.com/lilydjwg/dotvim/blob/master/plugin/escalt.vim
 Plugin 'WinterXMQ/escalt.vim' " https://github.com/WinterXMQ/escalt.vim
 
+" text UML preview tool
+Plugin 'scrooloose/vim-slumlord' " https://github.com/scrooloose/vim-slumlord
+
 " my-scripts
 Plugin 'sarrow104/util.vim.git' " util#MySys()
 Plugin 'sarrow104/msg.vim.git' " msg#xxx()
@@ -149,6 +152,9 @@ Plugin 'plasticboy/vim-markdown'
 " Plugin 'jansenm/vim-cmake' " depends on -> neocompletecache not so good
 
 " utility tools
+"Plugin 'Chiel92/vim-autoformat' " https://github.com/Chiel92/vim-autoformat
+Plugin 'rhysd/vim-clang-format' "https://github.com/rhysd/vim-clang-format
+
 " NOTE: need SQL-workbench/J ultily
 "Plugin 'cosminadrianpopescu/vim-sql-workbench' " https://github.com/cosminadrianpopescu/vim-sql-workbench
 Plugin 'vim-scripts/dbext.vim' " https://github.com/vim-scripts/dbext.vim
@@ -207,6 +213,46 @@ Plugin 'rking/ag.vim'
 call vundle#end()            " required
 filetype plugin indent on    " required
 """""""""""""""""""""""""""""""""""""""""""""}}}
+
+" 'Chiel92/vim-autoformat' " https://github.com/Chiel92/vim-autoformat {{{1
+if globpath(&rtp, 'plugin/autoformat.vim') != ""
+    let g:formatterpath = ['/usr/bin/clang-format-3.8']
+endif
+
+" 'rhysd/vim-clang-format' "https://github.com/rhysd/vim-clang-format
+if globpath(&rtp, 'plugin/clang_format.vim') != ""
+    let g:clang_format#command='/usr/bin/clang-format-3.8'
+    "let g:clang_format#extra_args=''
+    "let g:clang_format#detect_style_file='.clang-format'
+    let g:clang_format#auto_format=1
+    let g:clang_format#auto_format_on_insert_leave=0
+
+    let g:clang_format#auto_formatexpr=1
+    set textwidth=0
+    " You must set textwidth to 0 when the formatexpr is set.
+
+    let g:clang_format#code_style='google' " possible value list [llvm, google, chromium, mozilla]
+
+    let g:clang_format#style_options = {
+                \ "AccessModifierOffset" : -4,
+                \ "AllowShortIfStatementsOnASingleLine" : "true",
+                \ "AlwaysBreakTemplateDeclarations" : "true",
+                \ "Standard" : "C++11",
+                \ "BreakBeforeBraces" : "Stroustrup"}
+
+    " map to <Leader>cf in C++ code
+    " autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
+    " autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
+
+    autocmd FileType c,cpp,objc nnoremap <buffer>= :<C-u>ClangFormat<CR>
+    autocmd FileType c,cpp,objc vnoremap <buffer>= :ClangFormat<CR>
+
+    " if you install vim-operator-user
+    "autocmd FileType c,cpp,objc map <buffer><Leader>x <Plug>(operator-clang-format)
+
+    " Toggle auto formatting:
+    "nmap <Leader>C :ClangFormatAutoToggle<CR>
+endif
 
 " dimasg/vim-mark " {{{1
 if globpath(&rtp, 'plugin/ctrlsf.vim') != "" && !globpath(&rtp, 'plugin/mark.vim') != ""
@@ -370,7 +416,25 @@ if globpath(&rtp, 'plugin/youcompleteme.vim') != ""
     nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
     nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
     nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+    " NOTE:，某些语言，比如golang，并不支持下面这个命令！（golang import
+    " 的是文件夹，而不是某特定的文件……）
     nnoremap <leader>go :YcmCompleter GoToInclude<CR>
+
+    " NOTE: 仅支持 'c, cpp, objc, objcpp, cs, python, typescript, javascript'
+    " - The type or declaration of identifier,
+    " - Doxygen/javadoc comments,
+    " - Python docstrings,
+
+    nnoremap <leader>gd :YcmCompleter GetDoc<CR>
+
+    " NOTE: 以command-line message的方式，显示当前标识符的具体类型
+    nnoremap <leader>gt :YcmCompleter GetType<CR>
+
+    nnoremap <leader>gL :split<bar>YcmCompleter GoToDeclaration<CR>
+    nnoremap <leader>gF :split<bar>YcmCompleter GoToDefinition<CR>
+    nnoremap <leader>gG :split<bar>YcmCompleter GoToDefinitionElseDeclaration<CR>
+    nnoremap <leader>gO :split<bar>YcmCompleter GoToInclude<CR>
 
     " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_global_ycm_extra_conf = '~/.vim/ycm/cpp/.ycm_extra_conf.py'
@@ -682,6 +746,9 @@ set number
 set relativenumber
 set sessionoptions+=curdir
 
+" NOTE: 2016-09-05
+set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:~\")})%)%(\ %a%)\ -\ %{v:servername}\ %{fnamemodify(v:this_session,\":p:~\")}
+
 "autocmd FocusLost *          :set number norelativenumber
 "autocmd FocusGained *        :set number relativenumber
 
@@ -947,10 +1014,6 @@ if $COLORTERM == 'gnome-terminal'
     "colorscheme desert
 elseif $COLORTERM == 'rxvt-xpm'
     set term=$TERM
-endif
-
-if has('gui_gtk2')			" default font setting {{{2
-    set guifont=Courier\ New\ 12
 endif
 
 function! Message_Debug()
@@ -1747,3 +1810,7 @@ syntax on
 set nobackup                            " No backups
 set nowritebackup
 
+if !has('gui_running')
+    set t_Co=88
+    set t_Co=256
+endif
