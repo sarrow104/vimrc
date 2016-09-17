@@ -73,7 +73,8 @@ flags = [
 '-isystem', '/usr/include/c++/4.9/'
 ]
 
-flags=flags + os.getenv('CPATH').replace(':', ' -isystem ').split()
+if os.getenv('CPATH') != None:
+  flags=flags + os.getenv('CPATH').replace(':', ' -isystem ').split()
 
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
