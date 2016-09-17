@@ -66,3 +66,5 @@ update
 
 bundle/
 sessions/
+
+**/.ycm_extra_conf.pyc
