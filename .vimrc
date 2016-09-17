@@ -153,13 +153,13 @@ Plugin 'plasticboy/vim-markdown'
 
 " utility tools
 "Plugin 'Chiel92/vim-autoformat' " https://github.com/Chiel92/vim-autoformat
-Plugin 'rhysd/vim-clang-format' "https://github.com/rhysd/vim-clang-format
+Plugin 'rhysd/vim-clang-format' " https://github.com/rhysd/vim-clang-format
+Plugin 'vim-utils/vim-man' " https://github.com/vim-utils/vim-man
 
 " NOTE: need SQL-workbench/J ultily
 "Plugin 'cosminadrianpopescu/vim-sql-workbench' " https://github.com/cosminadrianpopescu/vim-sql-workbench
 Plugin 'vim-scripts/dbext.vim' " https://github.com/vim-scripts/dbext.vim
 Plugin 'vim-scripts/SQLComplete.vim' " https://github.com/vim-scripts/SQLComplete.vim
-Plugin 'rkitover/vimpager'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Shougo/unite.vim' " needed by vimfiler
 Plugin 'Shougo/vimfiler.vim'
@@ -213,6 +213,14 @@ Plugin 'rking/ag.vim'
 call vundle#end()            " required
 filetype plugin indent on    " required
 """""""""""""""""""""""""""""""""""""""""""""}}}
+
+" 'vim-utils/vim-man' " https://github.com/vim-utils/vim-man {{{1
+if globpath(&rtp, 'plugin/man.vim') != ""
+    " - open man page for word under cursor in a horizontal split
+    map <leader>M <Plug>(Man)
+    " - open man page for word under cursor in a vertical split
+    map <leader>V <Plug>(Vman)
+endif
 
 " 'Chiel92/vim-autoformat' " https://github.com/Chiel92/vim-autoformat {{{1
 if globpath(&rtp, 'plugin/autoformat.vim') != ""
@@ -304,28 +312,6 @@ if globpath(&rtp, 'plugin/lua-ftplugin.vim') != ""
 
     "" Here's the resulting regular expression pattern:
     "'^\(pl\.strict\|lgi\..\)$'
-endif
-
-" vimpager {{{1
-if globpath(&rtp, 'plugin/vimpager.vim') != ""
-    "set rtp^=$HOME/.vim/bundle/vimpager
-    "let g:vimpager = {}
-    "let g:less     = {}
-    "
-    "let g:less.enabled = 0
-    "let g:vimpager.gvim = 1
-    "let g:less.hlsearch = 0
-    "let g:vimpager.X11 = 0
-    "let g:less.scrolloff = 5
-    "
-    "if exists('g:vimpager.enabled')
-    "  if exists('g:vimpager.ptree') && g:vimpager.ptree[-2] == 'wman'
-    "    set ft=man
-    "  endif
-    "endif
-
-    " turn on less mode
-    runtime macros/less.vim
 endif
 
 " 'majutsushi/tagbar' " {{{1
@@ -1008,13 +994,13 @@ endif
 "endif
 
 " Sarrow: 2016-08-18
-if $COLORTERM == 'gnome-terminal'
-    "set term=gnome-256color
-    set term=$TERM
-    "colorscheme desert
-elseif $COLORTERM == 'rxvt-xpm'
-    set term=$TERM
-endif
+"if $COLORTERM == 'gnome-terminal'
+"    "set term=gnome-256color
+"    set term=$TERM
+"    "colorscheme desert
+"elseif $COLORTERM == 'rxvt-xpm'
+"    set term=$TERM
+"endif
 
 function! Message_Debug()
     let _tmp_=@+
@@ -1810,7 +1796,8 @@ syntax on
 set nobackup                            " No backups
 set nowritebackup
 
-if !has('gui_running')
-    set t_Co=88
+"" use 256 colors in Console mode if we think the terminal supports it
+if &term =~? 'mlterm\|xterm\|screen'
+    "    set t_Co=88
     set t_Co=256
 endif
