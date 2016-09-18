@@ -61,140 +61,140 @@ vim 是一个高度可定制化的，文本编辑软件。因此，其个性化�
  '<,'>s/^.\+$/- [\0](https:\/\/github.com\/\0)/ge
 ```
 
-- [sarrow104/Vundle.vim](https://github.com/sarrow104/Vundle.vim)
+- [sarrow104/Vundle.vim](https://github.com/sarrow104/Vundle.vim)  
   相比原版，修改了一下，对于本地rep插件的管理方式。
 
-- [Valloric/YouCompleteMe](https://github.com/Valloric/YouCompleteMe)
+- [Valloric/YouCompleteMe](https://github.com/Valloric/YouCompleteMe)  
   基于clang的，`C/C++` 编程语言，补全神器。另外，还整合了，C#，python, golang等语言的补全环境。
 
-- [Valloric/ListToggle](https://github.com/Valloric/ListToggle)
-- [scrooloose/syntastic](https://github.com/scrooloose/syntastic)
+- [Valloric/ListToggle](https://github.com/Valloric/ListToggle)  
+- [scrooloose/syntastic](https://github.com/scrooloose/syntastic)  
     实时语法检查支持；支持 `C/C++` 等语言；
-- [valloric/MatchTagAlways](https://github.com/valloric/MatchTagAlways)
+- [valloric/MatchTagAlways](https://github.com/valloric/MatchTagAlways)  
     增强的符号、区块配对高亮。
-- [majutsushi/tagbar](https://github.com/majutsushi/tagbar)
+- [majutsushi/tagbar](https://github.com/majutsushi/tagbar)  
     大纲视图；同样支持多种语言。
-- [fatih/vim-go.git](https://github.com/fatih/vim-go.git)
+- [fatih/vim-go.git](https://github.com/fatih/vim-go.git)  
     `golang` 开发环境；同样，由 `YCM` 整合。
-- [tbastos/vim-lua](https://github.com/tbastos/vim-lua)
-- [xolox/vim-lua-ftplugin](https://github.com/xolox/vim-lua-ftplugin)
-- [LucHermitte/lh-vim-lib](https://github.com/LucHermitte/lh-vim-lib)
-- [LucHermitte/lh-tags](https://github.com/LucHermitte/lh-tags)
-- [LucHermitte/lh-dev](https://github.com/LucHermitte/lh-dev)
-- [LucHermitte/vim-refactor](https://github.com/LucHermitte/vim-refactor)
+- [tbastos/vim-lua](https://github.com/tbastos/vim-lua)  
+- [xolox/vim-lua-ftplugin](https://github.com/xolox/vim-lua-ftplugin)  
+- [LucHermitte/lh-vim-lib](https://github.com/LucHermitte/lh-vim-lib)  
+- [LucHermitte/lh-tags](https://github.com/LucHermitte/lh-tags)  
+- [LucHermitte/lh-dev](https://github.com/LucHermitte/lh-dev)  
+- [LucHermitte/vim-refactor](https://github.com/LucHermitte/vim-refactor)  
     `vim` 源码重构插件；以上三个插件`LucHermitte/lh-vim-lib`，`LucHermitte/lh-tags`，`LucHermitte/lh-dev`，是本插件的基础库。
-- [Shougo/vimshell.vim](https://github.com/Shougo/vimshell.vim)
-- [mattn/emmet-vim](https://github.com/mattn/emmet-vim)
+- [Shougo/vimshell.vim](https://github.com/Shougo/vimshell.vim)  
+- [mattn/emmet-vim](https://github.com/mattn/emmet-vim)  
     `emmet` 风格的，`html` 标签，批量快速插入插件。
-- [SirVer/ultisnips](https://github.com/SirVer/ultisnips)
+- [SirVer/ultisnips](https://github.com/SirVer/ultisnips)  
     增强的代码片段
-- [honza/vim-snippets](https://github.com/honza/vim-snippets)
-- [Shougo/vimproc.vim](https://github.com/Shougo/vimproc.vim)
+- [honza/vim-snippets](https://github.com/honza/vim-snippets)  
+- [Shougo/vimproc.vim](https://github.com/Shougo/vimproc.vim)  
     异步调用基础插件；
-- [idanarye/vim-vebugger](https://github.com/idanarye/vim-vebugger)
+- [idanarye/vim-vebugger](https://github.com/idanarye/vim-vebugger)  
     调试工具；继承多种调试器；比如`GDB`。依赖于 `Shougo/vimproc.vim`
-- [myusuf3/numbers.vim](https://github.com/myusuf3/numbers.vim)
+- [myusuf3/numbers.vim](https://github.com/myusuf3/numbers.vim)  
     增强型行号显示。
-- [WinterXMQ/escalt.vim](https://github.com/WinterXMQ/escalt.vim)
+- [WinterXMQ/escalt.vim](https://github.com/WinterXMQ/escalt.vim)  
     源自 `狐狸` 的 `escape` 序列插件。针对终端使用。
-- [scrooloose/vim-slumlord](https://github.com/scrooloose/vim-slumlord)
-- [sarrow104/util.vim.git](https://github.com/sarrow104/util.vim.git)
-- [sarrow104/msg.vim.git](https://github.com/sarrow104/msg.vim.git)
-- [sarrow104/font.vim](https://github.com/sarrow104/font.vim)
+- [scrooloose/vim-slumlord](https://github.com/scrooloose/vim-slumlord)  
+- [sarrow104/util.vim.git](https://github.com/sarrow104/util.vim.git)  
+- [sarrow104/msg.vim.git](https://github.com/sarrow104/msg.vim.git)  
+- [sarrow104/font.vim](https://github.com/sarrow104/font.vim)  
     字体自动管理调整的插件——适用于 gvim；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/include-complete.vim.git](https://github.com/sarrow104/include-complete.vim.git)
+- [sarrow104/include-complete.vim.git](https://github.com/sarrow104/include-complete.vim.git)  
     `C/C++` 头文件补全插件——支持过滤掉实现`.c/.cpp` 文件；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/index.vim](https://github.com/sarrow104/index.vim)
+- [sarrow104/index.vim](https://github.com/sarrow104/index.vim)  
     `.idx` 文件索引语法；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/fencview.vim.git](https://github.com/sarrow104/fencview.vim.git)
+- [sarrow104/fencview.vim.git](https://github.com/sarrow104/fencview.vim.git)  
     `vim-scripts.org` 上的 `fencview` 插件备份。快速调整并查看文件的编码。
-- [sarrow104/toggle.vim.git](https://github.com/sarrow104/toggle.vim.git)
+- [sarrow104/toggle.vim.git](https://github.com/sarrow104/toggle.vim.git)  
     快速切换 `vim` 某些状态，比如高亮 `/` 搜索；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/txt.vim.git](https://github.com/sarrow104/txt.vim.git)
+- [sarrow104/txt.vim.git](https://github.com/sarrow104/txt.vim.git)  
     增强的 `text` 语法，自带大纲；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/system.vim.git](https://github.com/sarrow104/system.vim.git)
+- [sarrow104/system.vim.git](https://github.com/sarrow104/system.vim.git)  
     快速打开 `shell` 或者 `file-explorer`；自带 `nerdtree`支持；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/pairpunct.vim.git](https://github.com/sarrow104/pairpunct.vim.git)
+- [sarrow104/pairpunct.vim.git](https://github.com/sarrow104/pairpunct.vim.git)  
     快速输入成对标点。并快捷修改引号、括号；支持中英文，两种风格（全角，半角）；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/make.vim.git](https://github.com/sarrow104/make.vim.git)
+- [sarrow104/make.vim.git](https://github.com/sarrow104/make.vim.git)  
     `makefile` 文件的补全，以及模板插件；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/tags.vim.git](https://github.com/sarrow104/tags.vim.git)
+- [sarrow104/tags.vim.git](https://github.com/sarrow104/tags.vim.git)  
     `ctags` 和 `cscope` 索引文件快速管理；依赖于 `sarrow104/util.vim.git`,`sarrow104/msg.vim.git`
-- [sarrow104/gensketch.vim.git](https://github.com/sarrow104/gensketch.vim.git)
+- [sarrow104/gensketch.vim.git](https://github.com/sarrow104/gensketch.vim.git)  
     基于外置模板的，批量文件生成工具（可生成目录树），使用外部工具；
-- [sarrow104/simple-cmake.vim.git](https://github.com/sarrow104/simple-cmake.vim.git)
+- [sarrow104/simple-cmake.vim.git](https://github.com/sarrow104/simple-cmake.vim.git)  
     生成简单的 `CMakeLists.txt` 文件的工具。
-- [tomasr/molokai.git](https://github.com/tomasr/molokai.git)
+- [tomasr/molokai.git](https://github.com/tomasr/molokai.git)  
     某 `vim` 颜色主题。
-- [mhartington/oceanic-next](https://github.com/mhartington/oceanic-next)
-- [Yggdroot/indentLine](https://github.com/Yggdroot/indentLine)
+- [mhartington/oceanic-next](https://github.com/mhartington/oceanic-next)  
+- [Yggdroot/indentLine](https://github.com/Yggdroot/indentLine)  
     显示代码缩进级别的插件；需要随时计算，可能有些慢
-- [Raimondi/delimitMate](https://github.com/Raimondi/delimitMate)
-- [andrwb/vim-lapis256](https://github.com/andrwb/vim-lapis256)
-- [vim-jp/vim-cpp.git](https://github.com/vim-jp/vim-cpp.git)
-- [ArkBriar/vim-qmake](https://github.com/ArkBriar/vim-qmake)
+- [Raimondi/delimitMate](https://github.com/Raimondi/delimitMate)  
+- [andrwb/vim-lapis256](https://github.com/andrwb/vim-lapis256)  
+- [vim-jp/vim-cpp.git](https://github.com/vim-jp/vim-cpp.git)  
+- [ArkBriar/vim-qmake](https://github.com/ArkBriar/vim-qmake)  
     `qmake` 语法
-- [richq/vim-cmake-completion](https://github.com/richq/vim-cmake-completion)
+- [richq/vim-cmake-completion](https://github.com/richq/vim-cmake-completion)  
     `cmake` 补全
-- [vim-scripts/JavaScript-Indent](https://github.com/vim-scripts/JavaScript-Indent)
-- [evanmiller/nginx-vim-syntax](https://github.com/evanmiller/nginx-vim-syntax)
-- [hail2u/vim-css3-syntax](https://github.com/hail2u/vim-css3-syntax)
-- [plasticboy/vim-markdown](https://github.com/plasticboy/vim-markdown)
-- [rhysd/vim-clang-format](https://github.com/rhysd/vim-clang-format)
+- [vim-scripts/JavaScript-Indent](https://github.com/vim-scripts/JavaScript-Indent)  
+- [evanmiller/nginx-vim-syntax](https://github.com/evanmiller/nginx-vim-syntax)  
+- [hail2u/vim-css3-syntax](https://github.com/hail2u/vim-css3-syntax)  
+- [plasticboy/vim-markdown](https://github.com/plasticboy/vim-markdown)  
+- [rhysd/vim-clang-format](https://github.com/rhysd/vim-clang-format)  
     基于 `clang-format` 的自动 `C/C++` 源码格式化插件
-- [vim-utils/vim-man](https://github.com/vim-utils/vim-man)
+- [vim-utils/vim-man](https://github.com/vim-utils/vim-man)  
     方便的，`vim` 方式 的 `manpage` 查看插件；要点：高亮，跳转
-- [vim-scripts/dbext.vim](https://github.com/vim-scripts/dbext.vim)
+- [vim-scripts/dbext.vim](https://github.com/vim-scripts/dbext.vim)  
     `sql` stuff
-- [vim-scripts/SQLComplete.vim](https://github.com/vim-scripts/SQLComplete.vim)
+- [vim-scripts/SQLComplete.vim](https://github.com/vim-scripts/SQLComplete.vim)  
     `sql` stuff
-- [scrooloose/nerdtree](https://github.com/scrooloose/nerdtree)
+- [scrooloose/nerdtree](https://github.com/scrooloose/nerdtree)  
     最流行的 树形文件夹 浏览利器
-- [Shougo/unite.vim](https://github.com/Shougo/unite.vim)
-- [Shougo/vimfiler.vim](https://github.com/Shougo/vimfiler.vim)
-- [vim-airline/vim-airline](https://github.com/vim-airline/vim-airline)
+- [Shougo/unite.vim](https://github.com/Shougo/unite.vim)  
+- [Shougo/vimfiler.vim](https://github.com/Shougo/vimfiler.vim)  
+- [vim-airline/vim-airline](https://github.com/vim-airline/vim-airline)  
     基于 `python` 的，`vim` 状态栏、`tab` 高亮显示，整合解决方案。
-- [vim-airline/vim-airline-themes](https://github.com/vim-airline/vim-airline-themes)
-- [dyng/ctrlsf.vim](https://github.com/dyng/ctrlsf.vim)
+- [vim-airline/vim-airline-themes](https://github.com/vim-airline/vim-airline-themes)  
+- [dyng/ctrlsf.vim](https://github.com/dyng/ctrlsf.vim)  
     全文搜索；基于 `ack, ag or pt`等工具。
-- [hynek/vim-python-pep8-indent](https://github.com/hynek/vim-python-pep8-indent)
-- [terryma/vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
+- [hynek/vim-python-pep8-indent](https://github.com/hynek/vim-python-pep8-indent)  
+- [terryma/vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)  
     多光标
-- [lilydjwg/fcitx.vim.git](https://github.com/lilydjwg/fcitx.vim.git)
+- [lilydjwg/fcitx.vim.git](https://github.com/lilydjwg/fcitx.vim.git)  
     `fcitx` 输入法兼容插件。进出 `vim` 插入模式的时候，自动调整中英文。
-- [vim-scripts/mru.vim.git](https://github.com/vim-scripts/mru.vim.git)
+- [vim-scripts/mru.vim.git](https://github.com/vim-scripts/mru.vim.git)  
     most recent uese file list.
-- [dimasg/vim-mark](https://github.com/dimasg/vim-mark)
+- [dimasg/vim-mark](https://github.com/dimasg/vim-mark)  
     高亮自定义文本
-- [xolox/vim-misc](https://github.com/xolox/vim-misc)
-- [xolox/vim-session](https://github.com/xolox/vim-session)
+- [xolox/vim-misc](https://github.com/xolox/vim-misc)  
+- [xolox/vim-session](https://github.com/xolox/vim-session)  
     回话管理；（相比内建机制，本插件兼容 `tagbar`,`nerdtree` 等常用插件）
-- [junegunn/vim-easy-align.git](https://github.com/junegunn/vim-easy-align.git)
-- [godlygeek/tabular](https://github.com/godlygeek/tabular)
-- [qpkorr/vim-renamer](https://github.com/qpkorr/vim-renamer)
+- [junegunn/vim-easy-align.git](https://github.com/junegunn/vim-easy-align.git)  
+- [godlygeek/tabular](https://github.com/godlygeek/tabular)  
+- [qpkorr/vim-renamer](https://github.com/qpkorr/vim-renamer)  
     批量，快速的，`vim` 方式，重命名工具。
-- [Kris2k/A.vim](https://github.com/Kris2k/A.vim)
+- [Kris2k/A.vim](https://github.com/Kris2k/A.vim)  
     切换 `.h/.c` 文件
-- [vim-scripts/doxygen-support.vim](https://github.com/vim-scripts/doxygen-support.vim)
-- [vim-scripts/DoxygenToolkit.vim](https://github.com/vim-scripts/DoxygenToolkit.vim)
-- [edsono/vim-matchit](https://github.com/edsono/vim-matchit)
+- [vim-scripts/doxygen-support.vim](https://github.com/vim-scripts/doxygen-support.vim)  
+- [vim-scripts/DoxygenToolkit.vim](https://github.com/vim-scripts/DoxygenToolkit.vim)  
+- [edsono/vim-matchit](https://github.com/edsono/vim-matchit)  
     `if ... else` 跳转
-- [jlanzarotta/bufexplorer](https://github.com/jlanzarotta/bufexplorer)
-- [tpope/vim-speeddating](https://github.com/tpope/vim-speeddating)
+- [jlanzarotta/bufexplorer](https://github.com/jlanzarotta/bufexplorer)  
+- [tpope/vim-speeddating](https://github.com/tpope/vim-speeddating)  
     `<C-a>,<C-x>` 方式，沿用到表示日期的字符串。
-- [aur-archive/vim-stlrefvim](https://github.com/aur-archive/vim-stlrefvim)
+- [aur-archive/vim-stlrefvim](https://github.com/aur-archive/vim-stlrefvim)  
     `stl` 的 vim-help
-- [vim-scripts/CRefVim](https://github.com/vim-scripts/CRefVim)
+- [vim-scripts/CRefVim](https://github.com/vim-scripts/CRefVim)  
     `c-runtime-api` 的 vim-help
-- [easymotion/vim-easymotion](https://github.com/easymotion/vim-easymotion)
+- [easymotion/vim-easymotion](https://github.com/easymotion/vim-easymotion)  
     增强型，光标快速定位——”指哪打哪“
     类似浏览器alt + 数字 调整到具体widget的快速跳转功能
-- [will133/vim-dirdiff](https://github.com/will133/vim-dirdiff)
+- [will133/vim-dirdiff](https://github.com/will133/vim-dirdiff)  
     目录比较工具；
-- [ashisha/image.vim](https://github.com/ashisha/image.vim)
-- [ctrlpvim/ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim)
+- [ashisha/image.vim](https://github.com/ashisha/image.vim)  
+- [ctrlpvim/ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim)  
     按名称，快速路径搜索特定文件。
-- [rking/ag.vim](https://github.com/rking/ag.vim)
+- [rking/ag.vim](https://github.com/rking/ag.vim)  
     整合命令行工具 `ag` 的vim插件。
 
 ----
