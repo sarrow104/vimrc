@@ -161,6 +161,8 @@ Plugin 'vim-utils/vim-man' " https://github.com/vim-utils/vim-man
 Plugin 'vim-scripts/dbext.vim' " https://github.com/vim-scripts/dbext.vim
 Plugin 'vim-scripts/SQLComplete.vim' " https://github.com/vim-scripts/SQLComplete.vim
 Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin' " https://github.com/Xuyuanp/nerdtree-git-plugin
+Plugin 'tpope/vim-fugitive' " https://github.com/tpope/vim-fugitive
 Plugin 'Shougo/unite.vim' " needed by vimfiler
 Plugin 'Shougo/vimfiler.vim'
 " Buffer and status line
@@ -422,6 +424,11 @@ if globpath(&rtp, 'plugin/youcompleteme.vim') != ""
     nnoremap <leader>gG :split<bar>YcmCompleter GoToDefinitionElseDeclaration<CR>
     nnoremap <leader>gO :split<bar>YcmCompleter GoToInclude<CR>
 
+    " NOTE: 参考自 https://github.com/kun945/vim-ide-for-windows
+    " 2016-09-20
+    vnoremap <leader>gg y:YcmCompleter GoToDefinitionElseDeclaration <C-R>"<CR><CR>
+    vnoremap <leader>gG y:split<bar>YcmCompleter GoToDefinitionElseDeclaration <C-R>"<CR><CR>
+
     " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_global_ycm_extra_conf = '~/.vim/ycm/cpp/.ycm_extra_conf.py'
 
@@ -629,6 +636,27 @@ if globpath(&rtp, 'plugin/NERD_tree.vim') != ""
     "  call NERDTreeHighlightFile('gitignore', 'Gray', 'none', '#7F7F7F', 'none')
 endif
 
+" 'Xuyuanp/nerdtree-git-plugin' " {{{1
+if globpath(&rtp, 'plugin/NERD_tree.vim') != "" && globpath(&rtp, 'nerdtree_plugin/git_status.vim') != ""
+    let g:NERDTreeIndicatorMapCustom = {
+                \ "Modified"  : "✹",
+                \ "Staged"    : "✚",
+                \ "Untracked" : "✭",
+                \ "Renamed"   : "➜",
+                \ "Unmerged"  : "═",
+                \ "Deleted"   : "✖",
+                \ "Dirty"     : "✗",
+                \ "Clean"     : "✔︎",
+                \ "Unknown"   : "?"
+                \ }
+endif
+
+" 'tpope/vim-fugitive' " {{{1
+if globpath(&rtp, 'plugin/fugitive.vim') != ""
+    " TODO
+    " Add %{fugitive#statusline()} to 'statusline' to get an indicator with the current branch in (surprise!) your statusline.
+endif
+
 "suan/vim-instant-markdown {{{1
 " let g:instant_markdown_slow = 1
 "
@@ -734,9 +762,6 @@ set sessionoptions+=curdir
 
 " NOTE: 2016-09-05
 set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:~\")})%)%(\ %a%)\ -\ %{v:servername}\ %{fnamemodify(v:this_session,\":p:~\")}
-
-"autocmd FocusLost *          :set number norelativenumber
-"autocmd FocusGained *        :set number relativenumber
 
 " NOTE mks 后面的字符串，不能以"括起来——mks会认为后面是注释，而使用
 " Session.vim……
@@ -1389,14 +1414,14 @@ au FileType sh
 au FileType c,java,d
 	    \ let g:load_doxygen_syntax=1|
 	    \ setlocal cindent cinoptions=:0,g0,t0,(0,W8|
-	    \ setlocal fo+=mM ts=4 sw=4 et nu rnu fdm=marker|
+	    \ setlocal fo+=mM ts=4 sw=4 et fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()|
 	    \ setlocal dictionary+=~/.vim/keywords/c-c++.txt
 au FileType go
 	    \ let g:load_doxygen_syntax=1|
 	    \ setlocal cindent cinoptions=:0,g0,t0,(4,W8|
-	    \ setlocal fo+=mM ts=4 sw=4 et nu rnu fdm=marker|
+	    \ setlocal fo+=mM ts=4 sw=4 et fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()|
 	    \ setlocal dictionary+=~/.vim/keywords/go.txt
@@ -1405,7 +1430,7 @@ au FileType go
 au FileType cpp
 	    \ let g:load_doxygen_syntax=1|
 	    \ setlocal cindent cinoptions=:0,g0,j1,(0,ws,Ws|
-	    \ setlocal fo+=mM ts=4 sw=4 et nu rnu fdm=marker|
+	    \ setlocal fo+=mM ts=4 sw=4 et fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()|
 	    \ setlocal dictionary+=~/.vim/keywords/c-c++.txt
@@ -1420,14 +1445,15 @@ autocmd FileType c,cpp,java,d,go inoremap <CR> <C-R>=<SID>InsertNLBetweenCurlyBr
 
 " FileType: make {{{2
 autocmd FileType make
-	    \ setlocal fo+=mM ts=4 sw=4 nu rnu fdm=marker|
+	    \ setlocal fo+=mM ts=4 sw=4 fdm=marker|
 	    \ call pairpunct#Bind_punct_complete()|
 	    \ call pairpunct#PairAdd_english_style()
 
 " FileType: python {{{2
 " Suffix List: .py
 autocmd FileType python
-            \ setlocal ts=4 sw=4|
+            \ setlocal tabstop=4 softtabstop=4 shiftwidth=4 textwidth=79 |
+            \ setlocal expandtab autoindent |
             \ call pairpunct#Bind_punct_complete()|
             \ call pairpunct#PairAdd_english_style()
 
@@ -1443,7 +1469,7 @@ au BufRead *.txt
 
 au FileType text
             \ if line('$') == 1 && getline('$') == '' | set fenc=utf8 | endif |
-            \ setlocal ts=8 sw=8 nu rnu noet fo+=qnmM tw=80|
+            \ setlocal ts=8 sw=8 noet fo+=qnmM tw=80|
             \ call pairpunct#PairAdd_chinese_style()|
             \ call pairpunct#PairVisual_chinese_style()
 
@@ -1451,7 +1477,7 @@ au FileType text,markdown
             \ setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
 
 au FileType xml
-            \ setlocal ts=4 sw=4 nu rnu |
+            \ setlocal ts=4 sw=4 |
             \ call pairpunct#Bind_punct_complete()|
             \ call pairpunct#PairAdd_english_style()
 
