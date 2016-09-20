@@ -57,8 +57,8 @@ vim 是一个高度可定制化的，文本编辑软件。因此，其个性化�
 *备注* 用到的vim语句：
 
 ```vim
- '<,'>Collect ^Plugin\ '\zs.\{-}\ze'`
- '<,'>s/^.\+$/- [\0](https:\/\/github.com\/\0)/ge
+ '<,'>Collect ^Plugin\ '\zs.\{-}\ze'
+ '<,'>s/^\d\s\+\(.\+\)$/- [\1](https:\/\/github.com\/\1)/ge
 ```
 
 - [sarrow104/Vundle.vim](https://github.com/sarrow104/Vundle.vim)  
@@ -150,6 +150,10 @@ vim 是一个高度可定制化的，文本编辑软件。因此，其个性化�
     `sql` stuff
 - [scrooloose/nerdtree](https://github.com/scrooloose/nerdtree)  
     最流行的 树形文件夹 浏览利器
+- [Xuyuanp/nerdtree-git-plugin](https://github.com/Xuyuanp/nerdtree-git-plugin)
+    `git` 状态自动更新在 `NERDTree` 窗口
+- [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive)
+    `git` 命令行工具，整合到 `vim` 中
 - [Shougo/unite.vim](https://github.com/Shougo/unite.vim)  
 - [Shougo/vimfiler.vim](https://github.com/Shougo/vimfiler.vim)  
 - [vim-airline/vim-airline](https://github.com/vim-airline/vim-airline)  
