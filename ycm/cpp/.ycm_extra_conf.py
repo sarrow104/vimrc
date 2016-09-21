@@ -30,6 +30,13 @@
 
 import os
 import ycm_core
+import re
+import traceback
+
+# NOTE 2016-09-21 from:
+# https://github.com/yyzybb/cppenv/blob/master/autoconf/.ycm_extra_conf.py
+_debug = 1
+# NOTE 2016-09-21 end:
 
 # These are the compilation flags that will be used in case there's no
 # compilation database set (by default, one is not set).
@@ -76,6 +83,16 @@ flags = [
 if os.getenv('CPATH') != None:
   flags=flags + os.getenv('CPATH').replace(':', ' -isystem ').split()
 
+# NOTE 2016-09-21 from:
+# https://github.com/yyzybb/cppenv/blob/master/autoconf/.ycm_extra_conf.py
+def Log(msg):
+    if not _debug:
+        return 
+
+    f = open("/tmp/ycm_temp/conf.log", 'a+')
+    f.write(msg + '\n')
+    f.close()
+# NOTE 2016-09-21 end:
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
 # compile_commands.json file to use that instead of 'flags'. See here for
@@ -126,6 +143,7 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
 
     if new_flag:
       new_flags.append( new_flag )
+
   return new_flags
 
 
@@ -152,6 +170,116 @@ def GetCompilationInfoForFile( filename ):
   return database.GetCompilationInfoForFile( filename )
 
 
+# NOTE 2016-09-21 from:
+# https://github.com/yyzybb/cppenv/blob/master/autoconf/.ycm_extra_conf.py
+## Add includes flags from the Makefile.
+#
+makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile', 'build/Makefile', '../build/Makefile']
+
+def ExtractIncludesFromMakefile(path):
+    Log('ExtractIncludesFromMakefile')
+    include_flags = set()
+    make_commands = os.popen('cd %s && make -Bn 2>/dev/null' % path, 'r').read()
+    #Log('Make commands:\n%s' % make_commands);
+    matchs = re.findall(r'-I\s*[^\s$]+', make_commands)
+    for m in matchs:
+        include_path = m[2:].strip()
+        if not os.path.isabs(include_path):
+            include_path = os.path.join(path, include_path)
+        include_flags.add(include_path)
+
+    return include_flags
+
+def MakefileIncludesFlags(filename):
+    Log('MakefileIncludesFlags')
+    mk_flags = []
+    path = os.path.split(filename)[0]
+    for mk in makefile_list:
+        abs_mk = os.path.join(path, mk) 
+        if not os.path.isfile(abs_mk):
+            continue
+
+        include_flags = ExtractIncludesFromMakefile(os.path.split(abs_mk)[0])
+        for flag in include_flags:
+            mk_flags.append('-I')
+            mk_flags.append(flag)
+
+        break
+
+    Log(str(mk_flags))
+    return mk_flags
+
+def ExtractIncludesFromCMake(cmk):
+    Log('ExtractIncludesFromCMake')
+    cmk_dir = os.path.dirname(cmk)
+    args_dict = {
+            'CMAKE_SOURCE_DIR' : cmk_dir,
+            'CMAKE_BINARY_DIR' : cmk_dir,
+            'PROJECT_SOURCE_DIR' : cmk_dir,
+            'PROJECT_BINARY_DIR' : cmk_dir,
+            }
+    includes = []
+    set_c = 0
+    include_c = 0
+    with open(cmk, 'r') as f:
+        fileinfo = f.read()
+        for it in re.finditer(r'\s*set\s*\(([^"]+)\s+(.*)\)\s*', fileinfo, re.IGNORECASE):
+            set_c += 1
+            args_dict[it.group(1).strip().upper()] = it.group(2).strip().strip('"')
+
+        for it in re.finditer(r'\s*include_directories\s*\((.*)\)\s*', fileinfo, re.IGNORECASE):
+            include_c += 1
+            d = it.group(1).strip().strip('"')
+            while True:
+                finded = False
+                for it in re.finditer(r'\$\{(.*)\}', d):
+                    finded = True
+                    k = it.group(1).upper()
+                    v = args_dict.get(k)
+                    if not v:
+                        Log('unkown key: %s, when parse %s' % (k, cmk))
+                        finded = False
+                        break
+
+                    d = d.replace(it.group(0), v)
+
+                if not finded:
+                    break
+
+            if not os.path.isabs(d):
+                d = os.path.join(cmk_dir, d)
+            includes.append(d)
+
+    Log('set_c=%s, include_c=%s' % (set_c, include_c))
+    return includes
+
+def CMakeIncludesFlags(filename):
+    Log('CMakeIncludesFlags')
+    try:
+        flags = []
+        cmake_filename = 'CMakeLists.txt'
+        for deep in range(3):
+            cmk = os.path.dirname(filename)
+            for i in range(deep):
+                cmk = os.path.dirname(cmk)
+            cmk = os.path.join(cmk, cmake_filename)
+            isfile = os.path.isfile(cmk)
+            Log('test isfile %s: %s' % (cmk, isfile))
+            if not isfile:
+                continue
+
+            includes = ExtractIncludesFromCMake(cmk)
+            for include in includes:
+                flags.append('-I')
+                flags.append(include)
+            break
+    except:
+        Log(traceback.format_exc())
+
+    Log(str(flags))
+    return flags
+# NOTE 2016-09-21 end:
+
 def FlagsForFile( filename, **kwargs ):
   if database:
     # Bear in mind that compilation_info.compiler_flags_ does NOT return a
@@ -174,6 +302,16 @@ def FlagsForFile( filename, **kwargs ):
   else:
     relative_to = DirectoryOfThisScript()
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
+
+  # NOTE 2016-09-21 from:
+  # https://github.com/yyzybb/cppenv/blob/master/autoconf/.ycm_extra_conf.py
+  #relative_to = '/etc/vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm' 
+  final_flags.extend(['-I', os.path.dirname(filename)])
+  final_flags.extend(MakefileIncludesFlags(filename))
+  final_flags.extend(CMakeIncludesFlags(filename))
+
+  Log(str(final_flags))
+  # NOTE 2016-09-21 end:
 
   return {
     'flags': final_flags,
