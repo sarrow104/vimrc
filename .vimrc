@@ -73,7 +73,8 @@ Plugin 'sarrow104/Vundle.vim'
 " Plugin 'user/L9', {'name': 'newL9'} " Avoid a name conflict with L9
 
 " sematic-utils
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'davidhalter/jedi-vim' " for python3
+Plugin 'Valloric/YouCompleteMe' " for python2
 Plugin 'Valloric/ListToggle'
 Plugin 'scrooloose/syntastic'
 Plugin 'valloric/MatchTagAlways'
@@ -164,7 +165,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin' " https://github.com/Xuyuanp/nerdtree-git-plugin
 Plugin 'tpope/vim-fugitive' " https://github.com/tpope/vim-fugitive
 Plugin 'Shougo/unite.vim' " needed by vimfiler
-Plugin 'Shougo/vimfiler.vim'
+Plugin 'Shougo/vimfiler.vim' " :VimFiler vim-text style explorer
 " Buffer and status line
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -234,10 +235,14 @@ if globpath(&rtp, 'plugin/clang_format.vim') != ""
     let g:clang_format#command='/usr/bin/clang-format-3.8'
     "let g:clang_format#extra_args=''
     "let g:clang_format#detect_style_file='.clang-format'
-    let g:clang_format#auto_format=1
+    let g:clang_format#auto_format=0
     let g:clang_format#auto_format_on_insert_leave=0
 
     let g:clang_format#auto_formatexpr=1
+    " When the value is 1, formatexpr option is set by vim-clang-format
+    " automatically in C, C++ and ObjC codes. Vim's format mappings (e.g. gq) get to
+    " use clang-format to format. This option is not comptabile with Vim's textwidth
+    " feature. You must set textwidth to 0 when the formatexpr is set.
     set textwidth=0
     " You must set textwidth to 0 when the formatexpr is set.
 
@@ -251,11 +256,11 @@ if globpath(&rtp, 'plugin/clang_format.vim') != ""
                 \ "BreakBeforeBraces" : "Stroustrup"}
 
     " map to <Leader>cf in C++ code
-    " autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
-    " autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
+    autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
+    autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
 
-    autocmd FileType c,cpp,objc nnoremap <buffer>= :<C-u>ClangFormat<CR>
-    autocmd FileType c,cpp,objc vnoremap <buffer>= :ClangFormat<CR>
+    "autocmd FileType c,cpp,objc nnoremap <buffer>= :<C-u>ClangFormat<CR>
+    "autocmd FileType c,cpp,objc vnoremap <buffer>= :ClangFormat<CR>
 
     " if you install vim-operator-user
     "autocmd FileType c,cpp,objc map <buffer><Leader>x <Plug>(operator-clang-format)
@@ -360,7 +365,7 @@ let g:tagbar_type_go = {
 
 " 'myusuf3/numbers.vim' " {{{1
 if globpath(&rtp, 'plugin/numbers.vim') != ""
-    let g:numbers_exclude = ['tagbar', 'gundo', 'minibufexpl', 'nerdtree']
+    let g:numbers_exclude = ['unite', 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'nerdtree', 'man', 'help']
 endif
 
 " 'idanarye/vim-vebugger' {{{1
@@ -389,6 +394,41 @@ if globpath(&rtp, 'plugin/vebugger.vim') != ""
     " t      |:VBGtoggleTerminalBuffer|
     " r      Select mode only - |:VBGrawWriteSelectedText|
     " R      Prompt for an argument for |:VBGrawWrite|
+endif
+
+" 'davidhalter/jedi-vim' {{{1
+if globpath(&rtp, 'plugin/jedi.vim') != ""
+    " disable auto-initialization
+    " let g:jedi#auto_initialization = 0
+
+    " disable VIM options auto-initialization
+    " let g:jedi#auto_vim_configuration = 0
+
+    " "left", "right", "top", "bottom" or "winwidth". It will decide the
+    " direction where the split open.
+    let g:jedi#use_splits_not_buffers = "left"
+
+    " disable ...
+    " let g:jedi#popup_on_dot = 0
+
+    " Jedi displays function call signatures in insert mode in real-time,
+    " highlighting the current argument. The call signatures can be displayed
+    " as a pop-up in the buffer (set to 1, the default), which has the
+    " advantage of being easier to refer to, or in Vim's command line aligned
+    " with the function call (set to 2), which can improve the integrity of
+    " Vim's undo history.
+    let g:jedi#show_call_signatures = "1"
+
+    " Here are a few more defaults for actions, read the docs (:help jedi-vim)
+    " to get more information. If you set them to "", they are not assigned.
+
+    "let g:jedi#goto_command = "<leader>d"
+    "let g:jedi#goto_assignments_command = "<leader>g"
+    "let g:jedi#goto_definitions_command = ""
+    "let g:jedi#documentation_command = "K"
+    "let g:jedi#usages_command = "<leader>n"
+    "let g:jedi#completions_command = "<C-Space>"
+    "let g:jedi#rename_command = "<leader>r"
 endif
 
 " YouCompleteMe {{{1
@@ -450,7 +490,8 @@ if globpath(&rtp, 'plugin/youcompleteme.vim') != ""
                 \ 'fzf': 1,
                 \ 'ctrlp' : 1,
                 \ 'vim' : 1,
-                \ 'make': 1
+                \ 'make': 1,
+                \ 'ctrlsf': 1
                 \}
 
     " 补全按键，YCM默认是'<C-Space>'
@@ -473,6 +514,16 @@ if globpath(&rtp, 'plugin/youcompleteme.vim') != ""
     command! -nargs=0 GenYcmConfig		call writefile(readfile(expand(g:ycm_global_ycm_extra_conf), 'b'), getcwd()."/.ycm_extra_conf.py", 'b')
 
     let g:ycm_python_binary_path = '/usr/bin/python3'
+    " This forces YCM to use Jedi with Python3 (default is to use Jedi with the
+    " same Python interpreter that is used by the ycmd server, which is Python2).
+    " 
+    " This works no matter if your Vim is compiled with or without the +python3
+    " flag - you get Python3 autocompletion (and documentation look up and more).
+
+    " jedi-vim works fine for me now with +python3 support in vim. In added the following option to my .vimrc: let g:jedi#force_py_version = 3.
+    " http://vi.stackexchange.com/questions/2403/vim-code-completion-for-python-3
+    " $ pacman -S vim-jedi
+
     " NOTE:
     " 前后跳转，使用 <C-o> 和 <C-i>
 
@@ -657,6 +708,11 @@ if globpath(&rtp, 'plugin/fugitive.vim') != ""
     " Add %{fugitive#statusline()} to 'statusline' to get an indicator with the current branch in (surprise!) your statusline.
 endif
 
+" 'Shougo/vimfiler.vim' " {{{1
+if globpath(&rtp, 'plugin/vimfiler.vim') != ""
+    let g:vimfiler_as_default_explorer = 1
+endif
+
 "suan/vim-instant-markdown {{{1
 " let g:instant_markdown_slow = 1
 "
@@ -711,14 +767,14 @@ if globpath(&rtp, 'plugin/EasyMotion.vim') != ""
     "omap  / <Plug>(easymotion-sn)
 
     " Old:
-    map  / <Plug>(easymotion-sn)
-    omap / <Plug>(easymotion-tn)
+    " map  / <Plug>(easymotion-sn)
+    " omap / <Plug>(easymotion-tn)
 
-    " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
-    " Without these mappings, `n` & `N` works fine. (These mappings just provide
-    " different highlight method and have some other features )
-    map  n <Plug>(easymotion-next)
-    map  N <Plug>(easymotion-prev)
+    " " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+    " " Without these mappings, `n` & `N` works fine. (These mappings just provide
+    " " different highlight method and have some other features )
+    " map  n <Plug>(easymotion-next)
+    " map  N <Plug>(easymotion-prev)
 
     map <Leader>w <Plug>(easymotion-iskeyword-w)
     map <Leader>b <Plug>(easymotion-iskeyword-b)
@@ -731,8 +787,8 @@ if globpath(&rtp, 'plugin/EasyMotion.vim') != ""
 
     "noremap ** :execute 'normal /'.expand("<cword>").'\<CR>\<CR>'
     " NOTE: 为了 避免和 vim-mark 冲突，这里使用双写的办法……
-    noremap ** /=expand("<cword>")<CR><CR>
-    noremap ## ?=expand("<cword>")<CR><CR>
+    "noremap ** /=expand("<cword>")<CR><CR>
+    "noremap ## ?=expand("<cword>")<CR><CR>
 
     let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 endif
@@ -741,6 +797,13 @@ endif
 if globpath(&rtp, 'plugin/easy_align.vim') != ""
     "xmap <leader>ga <Plug>(EasyAlign)
     vnoremap ga <Plug>(EasyAlign)
+endif
+
+" 'xolox/vim-session' {{{1
+if globpath(&rtp, 'plugin/session.vim') != ""
+    if globpath(&rtp, 'plugin/NERD_tree.vim') != ""
+        command! -nargs=0       SessionList  :NERDTree ~/.vim/sessions
+    endif
 endif
 
 " https://github.com/ArkBriar/vim-qmake .pro " {{{1
@@ -877,7 +940,9 @@ set novisualbell t_vb=
 set winaltkeys=no
 
 set hidden                      " allow to cycle and hide modified buffers
-set lazyredraw                  " [VIM5];  do not update screen while executing macros
+if !has('job')
+    set lazyredraw                  " [VIM5];  do not update screen while executing macros
+endif
 
 " visual-diff
 set diffopt=filler,context:5,iwhite
@@ -921,7 +986,8 @@ setglobal fileencoding=chinese	" {{{2
 "" NOTE: `bom` is short for Byte Order Mask'
 set fileencodings=ucs-bom,utf-8,cp936
 
-set ambiwidth=double
+" set ambiwidth=double
+set ambiwidth=single
 
 "" the appearence of line number
 highlight LineNr    guifg=#008f00 gui=bold guibg=#222222
@@ -1405,6 +1471,12 @@ command -nargs=1 -complete=file New	call s:EditAndJump(<q-args>, 1)
 "  FileType Spcific Extension:		{{{1
 "" NOTE: sw : shiftwidth; ts : tabstop; et : expandtab; gfn : guifont; nu : number; fdm : foldermethod;
 
+" FileType: help {{{2
+au FileType help set nonu nornu
+
+" FileType: man {{{2
+au FileType man set nonu nornu
+
 " FileType: sh {{{2
 au FileType sh
 	    \ call pairpunct#Bind_punct_complete()|
@@ -1498,7 +1570,7 @@ if !filereadable("~/.vim/keywords/cmake.txt")
 endif
 
 autocmd FileType cmake
-            \ setlocal ts=4 sw=4|
+            \ setlocal ts=4 sw=4 nu rnu|
             \ call pairpunct#PairAdd_english_style()
 
 " FileType: vim-scripts {{{2
@@ -1577,10 +1649,11 @@ function! s:Url_git_https2ssl()
 endfunction
 command! -nargs=0 -range=% UrlGitConverter	call <SID>Url_git_https2ssl()<CR>
 
-" Sarrow:2009一月13
+" Sarrow:2009一月13; 2016-09-23 <CR> -> !
 " execute selection
 " TODO 将加入编码转换的支持（utf8-->cp936）
-vnoremap <CR>   y:silent @"<CR>
+vnoremap        ! y:@"<CR>
+noremap         ! :<C-R>=getline(".")<CR>
 " End:2009一月13
 
 let g:strftime_format=
@@ -1658,9 +1731,9 @@ inoremap <A-n> <C-o>o
 " 两个软回车，用于分段
 inoremap <A-p> <C-o>o<C-o>o
 " 两个硬回车，...
-inoremap <A-CR> <CR><CR>
-nnoremap <A-CR> a<CR><CR><Esc>
-vnoremap <A-CR> c<CR><CR><ESC>
+"inoremap <A-CR> <CR><CR>
+"nnoremap <A-CR> :noremal! a<CR><CR><Esc>
+"vnoremap <A-CR> :noremal! c<CR><CR><ESC>
 
 " Delete char current or previous
 "
@@ -1691,14 +1764,26 @@ vnoremap <A-y> "+y
 nnoremap <A-y> m"viw"+y`"
 
 " Paste!
-" highlighting selected mode, cut and paste
-vnoremap <S-CR> "+p
-" Normal-command mode, append and paste
-nnoremap <S-CR> "+p
-" Insert-mode, paste directly
-inoremap <S-CR> <C-R>+
-" Command-line mode, paste directly
-cnoremap <S-CR> <C-R>+
+if has('gui_running')
+    " highlighting selected mode, cut and paste
+    vnoremap <S-CR> "+p
+    " Normal-command mode, append and paste
+    nnoremap <S-CR> "+p
+    " Insert-mode, paste directly
+    inoremap <S-CR> <C-R>+
+    " Command-line mode, paste directly
+    cnoremap <S-CR> <C-R>+
+else
+    " NOTE: 在终端下，我无法正常隐射到<S-CR>或者<M-CR>，<A-CR>……
+    vnoremap v "+p
+    nnoremap v "+p
+    inoremap v <C-R>+
+    cnoremap v <C-R>+
+endif
+
+"  key-sequences timeout settings
+set ttimeout
+set ttimeoutlen=100
 
 " Move lines in visual-mode only
 xnoremap <C-j> :move '>+1<CR>gv
@@ -1736,7 +1821,7 @@ inoremap <Home>	<C-o>g0
 nnoremap <silent> <C-F4> :confirm bd<CR>
 vnoremap <silent> <C-F4> <ESC>:confirm bd<CR>
 onoremap <silent> <C-F4> <ESC>:confirm bd<CR>
-noremap <silent>! <C-F4> <ESC>:confirm bd<CR>
+noremap  <silent> <C-F4> <ESC>:confirm bd<CR>
 
 " CTRL-Tab is Next window
 "noremap <C-Tab> <C-W>w
