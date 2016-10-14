@@ -38,6 +38,7 @@ syn keyword cppConstant		__cplusplus
 if !exists("cpp_no_cpp11")
   syn keyword cppType		override final
   syn keyword cppExceptions	noexcept
+  syn keyword cppConcept	concept requires
   syn keyword cppStorageClass	constexpr decltype thread_local
   syn keyword cppConstant	nullptr
   syn keyword cppConstant	ATOMIC_FLAG_INIT ATOMIC_VAR_INIT
@@ -68,6 +69,7 @@ if version >= 508 || !exists("did_cpp_syntax_inits")
   HiLink cppAccess		cppStatement
   HiLink cppCast		cppStatement
   HiLink cppExceptions		Exception
+  HiLink cppConcept             cppStatement
   HiLink cppOperator		Operator
   HiLink cppStatement		Statement
   HiLink cppType		Type
