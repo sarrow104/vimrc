@@ -17,6 +17,11 @@ using std::cout;
 using std::endl;
 endsnippet
 
+snippet std::cout "std::cout << ... std::endl;"
+std::cout << ${1} << ${2:std::endl};
+${3}
+endsnippet
+
 snippet ifdefwin32 "#ifdef __WIN32__ ..."
 #ifdef __WIN32__${1}
 #else
