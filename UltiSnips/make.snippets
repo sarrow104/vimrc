@@ -1,3 +1,9 @@
+snippet gprof "static library" b
+.PHONY: gprof
+gprof:
+	gprof -b ${1} gmon.out | gprof2dot.py -s | xdot
+endsnippet
+
 snippet tmp.static_lib "static library" b
 GCC	= g++
 INCROOT	= ../../include
