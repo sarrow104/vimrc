@@ -108,7 +108,8 @@ Plugin 'honza/vim-snippets'
 Plugin 'Shougo/vimproc.vim' " https://github.com/Shougo/vimproc.vim
 Plugin 'idanarye/vim-vebugger' " https://github.com/idanarye/vim-vebugger
 
-Plugin 'myusuf3/numbers.vim' " https://github.com/myusuf3/numbers.vim
+"Plugin 'myusuf3/numbers.vim' " https://github.com/myusuf3/numbers.vim
+Plugin 'sarrow104/numbers.vim' " https://github.com/sarrow104/numbers.vim
 
 " NOTE: 这是备份自
 " https://github.com/lilydjwg/dotvim/blob/master/plugin/escalt.vim
@@ -132,8 +133,10 @@ Plugin 'sarrow104/make.vim.git'
 Plugin 'sarrow104/tags.vim.git'
 Plugin 'sarrow104/gensketch.vim.git'
 Plugin 'sarrow104/simple-cmake.vim.git'
+Plugin 'sarrow104/vimlang_jump' " https://github.com/sarrow104/vimlang_jump
 
 " colorscheme & syntax highlighting
+Plugin 'kelan/gyp.vim' " https://github.com/kelan/gyp.vim
 Plugin 'tomasr/molokai.git' " https://github.com/tomasr/molokai.git
 Plugin 'mhartington/oceanic-next'
 Plugin 'Yggdroot/indentLine' " 显示代码缩进级别的插件；需要随时计算，可能有些慢
@@ -169,7 +172,8 @@ Plugin 'Shougo/vimfiler.vim' " :VimFiler vim-text style explorer
 " Buffer and status line
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'dyng/ctrlsf.vim' " Search tool; using ack, ag or pt
+"Plugin 'dyng/ctrlsf.vim' " Search tool; using ack, ag or pt
+Plugin 'sarrow104/ctrlsf.vim' "https://github.com/sarrow104/ctrlsf.vim.git
 Plugin 'hynek/vim-python-pep8-indent' " Pythonindent 2016-05-22
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'lilydjwg/fcitx.vim.git'
@@ -202,7 +206,7 @@ Plugin 'ashisha/image.vim' " what for ?
 " Plugin 'kien/ctrlp.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 
-if has('gui_running')
+if has('gui_running') "|| 1
     " utility tools devicons must the last!
     Plugin 'ryanoasis/vim-devicons' " Powerline(air-line), Nerd Font
 endif
@@ -297,7 +301,7 @@ endif
 "
 " TODO 应该对查找的发生位置，设定一个保险——避免在根目录、home目录进行查找！
 if globpath(&rtp, 'plugin/ctrlsf.vim') != ""
-    noremap <leader>/ :silent execute("CtrlSF " . expand("<cword>"))<CR>
+    noremap <leader>/ :silent execute("CtrlSF -w " . expand("<cword>"))<CR>
 endif
 
 " fatih/vim-go.git  " https://github.com/fatih/vim-go.git {{{1
@@ -365,7 +369,7 @@ let g:tagbar_type_go = {
 
 " 'myusuf3/numbers.vim' " {{{1
 if globpath(&rtp, 'plugin/numbers.vim') != ""
-    let g:numbers_exclude = ['unite', 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'nerdtree', 'man', 'help']
+    let g:numbers_exclude = ['unite', 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'nerdtree', 'man', 'help', 'vim']
 endif
 
 " 'idanarye/vim-vebugger' {{{1
@@ -557,10 +561,10 @@ if globpath(&rtp, 'plugin/webdevicons.vim') != ""
     "set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 11
     "set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types\ 11
     let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
-    let g:WebDevIconsUnicodeGlyphDoubleWidth = 0
-    let g:webdevicons_conceal_nerdtree_brackets = 1
-    let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
-    set encoding=utf-8
+    "let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
+    "let g:webdevicons_conceal_nerdtree_brackets = 1
+    "let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
+    "set encoding=utf-8
 endif
 
 " vim-airline new 2016-07-14---------------------------------------------------------------{{{1
@@ -629,6 +633,11 @@ endif
   "let g:airline_symbols.whitespace = 'Ξ'
 " set statusline=%f%m\ \[%{&ff}:%{&fenc}:%Y]\ %{pathshorten(simplify(getcwd()))}%=(0x%B)(%L\|%c%V)%P%<
 ""}}}
+
+" 'ctrlpvim/ctrlp.vim' {{{1
+if globpath(&rtp, 'plugin/ctrlp.vim') != ""
+    noremap <leader>ct :CtrlPTag<CR>
+endif
 
 " UltiSnips  " {{{1
 if globpath(&rtp, 'plugin/UltiSnips.vim') != ""
@@ -824,7 +833,7 @@ set relativenumber
 set sessionoptions+=curdir
 
 " NOTE: 2016-09-05
-set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:~\")})%)%(\ %a%)\ -\ %{v:servername}\ %{fnamemodify(v:this_session,\":p:~\")}
+set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:~\")})%)%(\ %a%)\ -\ %{v:servername}\ %{v:this_session!=\"\"?fnamemodify(v:this_session,\":p:~\"):\"\"}
 
 " NOTE mks 后面的字符串，不能以"括起来——mks会认为后面是注释，而使用
 " Session.vim……
@@ -986,8 +995,8 @@ setglobal fileencoding=chinese	" {{{2
 "" NOTE: `bom` is short for Byte Order Mask'
 set fileencodings=ucs-bom,utf-8,cp936
 
-" set ambiwidth=double
-set ambiwidth=single
+set ambiwidth=double
+" set ambiwidth=single
 
 "" the appearence of line number
 highlight LineNr    guifg=#008f00 gui=bold guibg=#222222
@@ -1038,6 +1047,8 @@ if MySys() == 'windows' " {{{2
     command -nargs=0	MsysHere	silent execute ' !'.strpart($HOME, 0, 2).'\Program\msys\msys.exe "'.system#ToTermEnc(fnamemodify(bufname('%'), ":p:h")).'"'
 
 endif
+" LC_ALL=en_US.utf-8 vim
+"let $LANG='en_US'			" United Stats English
 
 "if has('gui_running')	" colorscheme 	{{{2
 "    "" ColorScheme Setting
@@ -1109,16 +1120,13 @@ command! -nargs=0 MessageDebug		call Message_Debug()
 " Recognize standard C/C++ headers
 "For $include
 if MySys() == "windows"			" searching path {{{2
-    "if strlen($MINGW)
-    "    for inc in [$MINGW_SYS_INC, $MINGW_INC, $MINGW_CPP_INC, $BOOST_INC, $PTHREAD_INC, $SSS_INC]
-    "        if strlen(inc)
-    "    	execute 'set path+='.inc
-    "        endif
-    "    endfor
-    "endif
+    for item in split(expand('$CPATH'),';')
+	execute "set path+=".item
+    endfor
 elseif MySys() == "linux"
-    let &path = &path . substitute(expand("$CPATH"), ":", ",", "g")
-    "set path+=/usr/include/
+    for item in split(expand('$CPATH'),':')
+	execute "set path+=".item
+    endfor
 endif
 
 " Recognize standard C++ headers	" {{{2
@@ -1479,33 +1487,49 @@ au FileType man set nonu nornu
 
 " FileType: sh {{{2
 au FileType sh
-	    \ call pairpunct#Bind_punct_complete()|
-	    \ call pairpunct#PairAdd_english_style()
+            \ if !exists('b:bash_style_loaded')                 |
+	    \ call pairpunct#Bind_punct_complete()              |
+	    \ call pairpunct#PairAdd_english_style()            |
+            \ let b:bash_style_loaded=1                         |
+            \ endif
 
 " FileType: c,java,d,cpp,go {{{2
 au FileType c,java,d
-	    \ let g:load_doxygen_syntax=1|
-	    \ setlocal cindent cinoptions=:0,g0,t0,(0,W8|
-	    \ setlocal fo+=mM ts=4 sw=4 et fdm=marker|
-	    \ call pairpunct#Bind_punct_complete()|
-	    \ call pairpunct#PairAdd_english_style()|
-	    \ setlocal dictionary+=~/.vim/keywords/c-c++.txt
+            \ if !exists('b:cfamilystyle_loaded')               |
+	    \ let g:load_doxygen_syntax=1                       |
+	    \ setlocal cindent cinoptions=g0,t0,(0,W8           |
+	    \ setlocal fo+=mM ts=4 sw=4 et fdm=marker           |
+	    \ call pairpunct#Bind_punct_complete()              |
+	    \ call pairpunct#PairAdd_english_style()            |
+	    \ setlocal dictionary+=~/.vim/keywords/c-c++.txt    |
+            \ let b:cfamilystyle_loaded=1                       |
+            \ endif
+
 au FileType go
-	    \ let g:load_doxygen_syntax=1|
-	    \ setlocal cindent cinoptions=:0,g0,t0,(4,W8|
-	    \ setlocal fo+=mM ts=4 sw=4 et fdm=marker|
-	    \ call pairpunct#Bind_punct_complete()|
-	    \ call pairpunct#PairAdd_english_style()|
-	    \ setlocal dictionary+=~/.vim/keywords/go.txt
+            \ if !exists('b:go_style_loaded')                   |
+	    \ let g:load_doxygen_syntax=1                       |
+	    \ setlocal cindent cinoptions=:0,g0,t0,(4,W8        |
+	    \ setlocal fo+=mM ts=4 sw=4 et fdm=marker           |
+	    \ setlocal dictionary+=~/.vim/keywords/go.txt       |
+	    \ call pairpunct#Bind_punct_complete()              |
+	    \ call pairpunct#PairAdd_english_style()            |
+            \ let b:go_style_loaded=1                           |
+            \ endif
 
 " NOTE http://stackoverflow.com/questions/8062608/vim-and-c11-lambda-auto-indentation
+" NOTE: autocmd FileType cpp setlocal ts=4
+" 这样的语句，甚至在每次切换窗口的生化，都会触发！
+" 也就是说，如果某buffer，已经手动设定了当前的ts值，那么在切换回去的时候，又会被autocmd值冲掉！
 au FileType cpp
-	    \ let g:load_doxygen_syntax=1|
-	    \ setlocal cindent cinoptions=:0,g0,j1,(0,ws,Ws|
-	    \ setlocal fo+=mM ts=4 sw=4 et fdm=marker|
-	    \ call pairpunct#Bind_punct_complete()|
-	    \ call pairpunct#PairAdd_english_style()|
-	    \ setlocal dictionary+=~/.vim/keywords/c-c++.txt
+            \ if !exists('b:cpp_style_loaded')                  |
+	    \ let g:load_doxygen_syntax=1                       |
+	    \ setlocal cindent cinoptions=g0,j1,(0,ws,Ws,N-s    |
+            \ setlocal fo+=mM ts=4 sw=4 et fdm=marker           |
+	    \ setlocal dictionary+=~/.vim/keywords/c-c++.txt    |
+	    \ call pairpunct#Bind_punct_complete()              |
+	    \ call pairpunct#PairAdd_english_style()            |
+            \ let b:cpp_style_loaded=1                          |
+            \ endif
 
 function! s:InsertNLBetweenCurlyBraces()
     if strpart(getline('.'), col('.') - 2, 2) == '{}'
@@ -1517,17 +1541,23 @@ autocmd FileType c,cpp,java,d,go inoremap <CR> <C-R>=<SID>InsertNLBetweenCurlyBr
 
 " FileType: make {{{2
 autocmd FileType make
-	    \ setlocal fo+=mM ts=4 sw=4 fdm=marker|
-	    \ call pairpunct#Bind_punct_complete()|
-	    \ call pairpunct#PairAdd_english_style()
+            \ if !exists('b:make_style_loaded')                 |
+	    \ setlocal fo+=mM ts=4 sw=4 fdm=marker              |
+	    \ call pairpunct#Bind_punct_complete()              |
+	    \ call pairpunct#PairAdd_english_style()            |
+            \ let b:make_style_loaded=1                         |
+            \ endif
 
 " FileType: python {{{2
 " Suffix List: .py
 autocmd FileType python
+            \ if !exists('b:python_style_loaded')               |
             \ setlocal tabstop=4 softtabstop=4 shiftwidth=4 textwidth=79 |
-            \ setlocal expandtab autoindent |
-            \ call pairpunct#Bind_punct_complete()|
-            \ call pairpunct#PairAdd_english_style()
+            \ setlocal expandtab autoindent                     |
+            \ call pairpunct#Bind_punct_complete()              |
+            \ call pairpunct#PairAdd_english_style()            |
+            \ let b:python_style_loaded=1                       |
+            \ endif
 
 " FileType: plain-text; enhanced syntax highlighting and browser function.		{{{2
 " Suffix List: .txt
@@ -1540,18 +1570,24 @@ au BufRead *.txt
             \ if expand("%:t") != "CMakeLists.txt" | setfiletype text | endif
 
 au FileType text
+            \ if !exists('b:text_style_loaded')                 |
             \ if line('$') == 1 && getline('$') == '' | set fenc=utf8 | endif |
-            \ setlocal ts=8 sw=8 noet fo+=qnmM tw=80|
-            \ call pairpunct#PairAdd_chinese_style()|
-            \ call pairpunct#PairVisual_chinese_style()
+            \ setlocal ts=8 sw=8 noet fo+=qnmM tw=80            |
+            \ call pairpunct#PairAdd_chinese_style()            |
+            \ call pairpunct#PairVisual_chinese_style()         |
+            \ let b:text_style_loaded=1                         |
+            \ endif
 
 au FileType text,markdown
             \ setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
 
 au FileType xml
-            \ setlocal ts=4 sw=4 |
-            \ call pairpunct#Bind_punct_complete()|
-            \ call pairpunct#PairAdd_english_style()
+            \ if !exists('b:xml_style_loaded')                  |
+            \ setlocal ts=4 sw=4                                |
+            \ call pairpunct#Bind_punct_complete()              |
+            \ call pairpunct#PairAdd_english_style()            |
+            \ let b:xml_style_loaded=1                          |
+            \ endif
 
 " FileType: markdown {{{2
 autocmd FileType markdown call pairpunct#PairAdd_chinese_style()
@@ -1575,8 +1611,8 @@ autocmd FileType cmake
 
 " FileType: vim-scripts {{{2
 autocmd FileType vim
-			\ call pairpunct#PairAdd_english_style()|
-			\ set ts=8 sw=4 expandtab
+            \ set ts=8 sw=4 expandtab nu rnu|
+            \ call pairpunct#PairAdd_english_style()
 
 " TODO {{{2
 " ctags for PHP
